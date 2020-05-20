@@ -5,6 +5,31 @@
 %Section 1 on neural networks and how they work, CNNs, Alexnet, Inception (but no further)
 \section{Neural networks}
 
+%3-4 sentences before figure, leading into the topic "since ancient times" sort of talk?
+
+Neural networks are something everyone have, even if they don't understand the concept. 
+Neurons in our brains fire signals to other neurons, which in turn do the same to the next neurons in line. 
+Some neurons are connected to a lot of neurons, other may only be connected to a few, creating all sorts of connection shapes ranging from massive trees to a short loop. 
+Over the course of a lifetime, these connections change as the brain learns and forgets information.
+
+%figure of typical nn
+\begin{figure}[htbp]  % order of priority: h here, t top, b bottom, p page
+  \centering
+  \includegraphics[width=.5\textwidth]{figures/2000px-Neural_network_example.svg.png}
+  \caption{Illustration of a simple feed-forward neural network\cite{wiki:simplennimage}}
+  \label{fig:simplenn}
+\end{figure}
+
+%3-6 sentences after figure explaining the basic concept of a nn
+
+In computing, standard simple neural networks are clearly defined into layers, with a clear point of entry called the "input" layer, with the result coming out of the "output" layer. 
+A basic illustration of this is provided in \cref{fig:simplenn}. 
+Information we want processed into the output result is inserted into each of its designated input neurons. 
+The hidden layer between the input and output abstracts the input from the output. 
+Each of the input data is then processed through the network, with each step applying some form of mathematical operation on the data. 
+In the case of \cref{fig:simplenn}, the input could be the current weekday and the time of day, with the output being a value between 0 and 1 determining if it's time to eat dinner. 
+On weekdays it could say that between 18:00 and 19:00 is the best time to eat dinner, while during the weekend it could extend the time to be sooner or later. 
+
 %General theory for what a neural network is
 %source to wikipedia here?
 %Small figure showing what it looks like (simple neuron image thing)
@@ -57,33 +82,103 @@ By combining the layers into building blocks, and then stacking them on top of e
 
 \subsection{Convolutional neural networks}
 
+While a neural network like the one shown in \cref{fig:simplenn} can be used to receive some results for simple data with no structure in the input, extracting information from sound and images requires the network to understand the relationship between each input. 
+To learn the meaning of the input structure, several different types of layers are mixed together, each applying its specific operation to the input it receives. 
+
+
 %Rundown on what a CNN is, what it is used for
 %Subsections for the direct explanation on the layers
 
+%6-8 sentences, explain basics
+%1-2 links to more on this?
+
 %S0: dense layers, basic
 \subsubsection{Dense layer}
+%4-6 sentences, explain what it is and where it's placed, FIGURE
+The dense layer is the simplest of all layers in all neural networks.
+Looking back at \cref{fig:simplenn}, the hidden layer in the figure is a dense layer.
+A dense layer only applies a simple multiplication operation on the input it receives with the weight of the connection between the two neurons.
+In convolutional neural networks, this layer is usually placed at the end of the network to represent the features that the previous layer have learned to detect.
+
 
 %S1: conv layer (in particular the 1D version)
 \subsubsection{Convolutional layer}
+%8-12 sentences, core of the network, FIGURE
+%What a conv layer is, the operation, go in detail on the 1D network
+The convolutional layer is the central part of the convolutional neural network.
+Unlike the dense layer that applies only a simple multiplication operation, this layer applies a filter over multiple inputs next to each other. 
+This filter is can also be called the convolution window, or the kernel.
+The filter applies a multiplication operation to every item in the convolution window, and then sums all of the results into one number.
+An example of the thesis relevant 1D convolution operation can be seen in figure XX.
+In a convolutional layer there can be any number of filters, and each of these filters can be different to produce different results from the same data.
+By combining these different filters, the model can be trained to detect different features in the input data, combinations of which can represent different output classes.
 
 %S2: pooling layers, max and average
 \subsubsection{Pooling layer}
+%8-12 sentences, max and average pooling layer, FIGURE
+%Explain the concept, what the pooling layer is
+The pooling layer is a very usual part of the complete convolutional neural network.
+Whether one processes audio or images, the input is often a very large matrix, while the output is often at most 1000 classes, as is the case with the AlexNet\cite{Krizhevsky:2017:ICD:3098997.3065386} and Inception\cite{szegedy2014going} networks.
+Since suddenly reducing the matrix down to only 1000 neurons or less would wash out the significance of each single feature detected by the network, pooling layers are applied to reduce the size of the input gradually throughout the network.
+For the purposes of this thesis, two different pooling layers have been considered, the max pooling layer and the average pooling layer.
+All pooling layers apply a filter similar to the convolution window on the input data.
+Unlike convolution however, in the case of the max pooling operation, the highest value in the window is passed to the next layer.
+The average pooling layer on the other hand calculates the average value in the filter, and passes this forward.
+In addition to doing this, the size of the network is commonly divided by the size of the filter.
+As shown in figure XX, the input in both pooling types is reduced from 6 values down to 3 in the next layer.
+While this is common, it isn't strictly necessary and can be adjusted freely.
 
 %Custom images for all of this, but based on theory
 
 %One more subsection tied to optimizers, loss functions and other stuff?
 %Working title Gradient descent, uncertain if correct
-\subsection{Gradient descent}
+%New title, training the neural network, more precise
+\subsection{Training the neural network}
 %Network needs to be trained to work, the process of adjusting this is (title of part)
+%4-6 sentences to tie in backprop from history, only "part" of the puzzle
 
-\subsubsection{Optimizers}
-%RMSProp, Adam (and variants), SGD?
+Creating the neural network structure is only the first step in the process, as the initial weights in the model are completely meaningless to the desired result.
+As mentioned in the history of neural networks, backpropagation was already figured out in 1975\cite{werbos1975beyond}.
+For each training pass over the dataset, also called an epoch, the training process executes several important steps that can be modified to change the weights more optimally to what is desired.
+
 
 \subsubsection{Loss functions}
 %Categorical crossentropy
+%6-8 sentences to explain crossentropy
+
+During the training process, the network predicts a value on the given input, and the expected value is also known.
+To calculate the difference between the two values, a loss function is used.
+When creating a neural network that has to classify the input into various different classes, the most commonly used loss function is the categorical cross-entropy loss function\cite{wiki:crossentropy}.
+In short, the result of the result of the loss function can be considered the distance between the predicted output and the desired output.
+To achieve the best possible weight combination in the neural network, the goal is therefore to reduce this number as much as possible.
+
+\subsubsection{Optimizers}
+%RMSProp, Adam (and variants), SGD?
+%8-10 sentences?
+
+While knowing the loss function number is useful for the human watching the training process, it is the role of the optimizer to take the loss values, and turn them into better weights.
+Optimizer is another word for the stochastic gradient descent algorithm\cite{wiki:sgd}, of which there exist many variations.
+The optimizer takes the loss value from each sample, and calculates the most optimal way to reduce the total error by adjusting the weights.
+As using the entire dataset can be impossible with sufficiently large datasets, and using single samples can produce local minimums, it is common to pass small batches of several dozen samples per batch to the optimizer.
+To ensure that the weights are not changed randomly, all optimizers use a parameter called the learning rate.
+The learning rate controls the distance by which each weight can be changed during one training epoch.
+While the older SGD optimizer only has one learning rate for the entire operation, newer optimizers like AdaGrad, RMSProp and Adam create an adapted learning rate for each parameter. 
+Selective modification of weights allows the optimizers to modify some weights more than others, leaving weights that have little effect on the loss alone while working on the more problematic weights.
 
 \subsubsection{Metrics}
 %Loss number, accuracy
+%4-6 sentences to explain metrics
+Finally, various metrics can be reported by the training program to the user, and be used to stop training early.
+In general, two metrics are used to determine how good a neural network is, loss and accuracy.
+Loss is the value output by the loss function, and accuracy is the percentage of times the network produced the accurate result.
+With loss, the perfect value is zero, while with accuracy the goal is to get as close to one as possible.
+As neural networks can be overfit for a particular dataset, it is common to use a part of the dataset as a validation set.
+The goal of the validation set is to also reach as perfect values as possible, however this dataset is not used during the training process.
+By excluding part of the dataset in this manner, a second set of metrics is produced with the validation prefix.
+In addition to the standard loss and accuracy metrics, other metrics can be used, like the top-K categorical accuracy.
+This variant of the accuracy metrics tracks how often the target value is in the top-K number of targets, rather than tracking how well the actual target was predicted.
+
+
 
 %Section 2 (probably earlier) on audio sample processing, what mfcc is, librosa
 %Working title
@@ -100,6 +195,15 @@ By combining the layers into building blocks, and then stacking them on top of e
 
 %One more section on other ways to process audio, pick one of the options that were candidates later, cqt and the other maybe
 \subsection{Other}
+%2-figure figure with other two ways to interpret audio
+%3-4 sentences why this is here
+%4-6 sentences to explain each
+%Figure before the subsections
+\subsubsection{Chroma cqt}
+\subsubsection{The last one}
+
+
+
 
 %Section 3 on trees, current existing methods of grouping data (agg, k-means etc)
 %Working title, other can be 
@@ -136,9 +240,8 @@ The concept of using neural networks in tree structures is not new. As NN layers
 %Small net figure - visio
 %conv operation - visio?
 %pooling operation - visio?
-%optimizer?
-%MFCC sample graph - python
-%cqt graph - python
-%agg cluster picture - scikit
+%MFCC sample graph - pull from spec report
+%cqt graph - pull from spec report
+%agg cluster picture - visio, arrows to point direction for explanation
 %tree-cnn picture of cluster from that report, maybe custom
 %iterative training ill - custom, if no good source found on this
