@@ -178,31 +178,73 @@ By excluding part of the dataset in this manner, a second set of metrics is prod
 In addition to the standard loss and accuracy metrics, other metrics can be used, like the top-K categorical accuracy.
 This variant of the accuracy metrics tracks how often the target value is in the top-K number of targets, rather than tracking how well the actual target was predicted.
 
+\subsection{Transfer learning}
+%Why
+Once a neural network is trained to do one task, it can often be adapted to do a similar, but different task.
+This process is called transfer learning\cite{wiki:transferlearning}.
+In the case of convolutional neural networks, the earlier layers in the model will often pick up generic features in the data, with the more specific features about the output class coming up towards the end of the model.
 
+%How
+To start the process of transfer learning, it is necessary to replace the classification head of the model being adapted.
+The classification head is the last couple of layers of the network, which is at minimum the final output layer.
+As the weights in the model are already initialized with feature detection, it is necessary to freeze large sections of the network to prevent the model from quickly losing the features in the first few epochs.
+Once the model reaches the top accuracy for the new problem, the previously frozen layers can be frozen to fine-tune the model to the new task, training with a reduced learning rate to prevent information loss in the new classification head.
+An example of this process can be found on various documentations of software supporting neural network development, like Tensorflow\cite{tensorflow:transferlearning} and Matlab\cite{MatlabPretrained}.
+
+
+%What the end result is
+Assuming that the old and new problem areas allow for transfer learning, the end result of transfer learning is a very high quality neural network model that takes only a fraction of the time to develop.
 
 %Section 2 (probably earlier) on audio sample processing, what mfcc is, librosa
 %Working title
 \section{Audio processing}
+%Necessary things to explain due to being part of MFCC:
 
+
+%Fourier transform
+\subsection{Fourier transform}
+To make use of the raw audio signal, it is necessary to isolate various parts of the audio into separate parts.
+As audio is effectively a lot of sines and cosines combined together to form a complex signal, these parts of the signal can be separated to find the frequencies that constitute part of the raw audio.
+The process of extracting these frequencies is computed using the Fourier transform.
+By extracting each of the signal waves that form the full audio signal, it is possible to analyze how each change over time, identifying the relevant signal waves while also detecting noise in the audio.
+The detected noisy signal waves can be removed while preserving the important signal waves for further processing.
+
+
+%Mel scale
+\subsection{Mel scale}
+Humans hear differences in sound on a different scale than the linear scale of the Hertz frequencies.
+When the sound is of low frequency, minute differences can be easily detected, while higher frequencies need bigger frequency differences to be found by the human ear.
+To more accurately represent the scale of sound heard by the human ear, the Mel scale was introduced in 1937\cite{melpaper}.
+By applying the Mel scale to frequency data, the frequencies of the signal can be represented on a more linear scale from the view of a human listener.
+
+%Discrete cosine transform
+\subsection{Discrete cosine transform}
+A raw audio signal takes a lot of space, and is therefore important to compress into smaller, more relevant blocks of information.
+Originally developed in the 1970s\cite{dctpaper} for use in image compression, it has also seen a lot of use in audio processing.
+Unlike the Fourier transform that operates on both sines and cosines, the DCT operates only on the cosine.
+The limitations imposed on the DCT to achieve a good compression of the features in raw audio create several assumptions about the input, such as whether the function being transformed is even or odd in the data window being processed.
+Because of this, a total of 16 variants of the transform exist, of which half are DCT and the other half are the Discrete sine transforms.
+Of these, the most relevant are the DCT-2 and DCT-3, which is the inverse of DCT-2, both described in the original paper\cite{dctpaper}.
+
+%Replace title with full name
 \subsection{MFCC}
+%4-6 sentences describing MFCC
+%name combines above to produce analyzable results
+%How to generate (source? no)
+%figures
+%result is stable (20, 40, 80)
+
+
 
 %1p about what MFCC is
 %2 figures showing what mfcc is, dct 2 and 3
 %1p explaining the difference?
 
-\subsubsection{Applications}
+%Subsection of MFCC
+\subsubsection{MFCC Applications}
 %Pull some of the uses for mfcc papers here
-
-%One more section on other ways to process audio, pick one of the options that were candidates later, cqt and the other maybe
-\subsection{Other}
-%2-figure figure with other two ways to interpret audio
-%3-4 sentences why this is here
-%4-6 sentences to explain each
-%Figure before the subsections
-\subsubsection{Chroma cqt}
-\subsubsection{The last one}
-
-
+%Pull in all of the MFCC application papers that have been found until now, include marine vessels
+%Then see if it's enough
 
 
 %Section 3 on trees, current existing methods of grouping data (agg, k-means etc)
@@ -230,10 +272,6 @@ One example of agglomerative clustering used in the processing of audio samples 
 %What Tree-CNN is and what it did
 The concept of using neural networks in tree structures is not new. As NN layers learn information in a structured manner that focuses on more generic feature detection in the first layers, expanding these networks to become more hierarchical classifiers is possible. One example of this is Tree-CNN \cite{roy2018treecnn}, which in addition to using multiple models in its solution, also implements incremental learning that expands the capability of the model over time, rather than training it on the entire dataset at once.
 
-%Section 5 on iterative training, use Tree-CNN paper here too?
-\section{Iterative training}
-%F
-%Find papers that reference this, explain the concept
 
 
 %Figures:
@@ -243,5 +281,4 @@ The concept of using neural networks in tree structures is not new. As NN layers
 %MFCC sample graph - pull from spec report
 %cqt graph - pull from spec report
 %agg cluster picture - visio, arrows to point direction for explanation
-%tree-cnn picture of cluster from that report, maybe custom
-%iterative training ill - custom, if no good source found on this
+
