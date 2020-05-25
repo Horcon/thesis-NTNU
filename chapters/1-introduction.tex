@@ -17,16 +17,21 @@
 
 
 In recent years, Artificial Intelligence, through the use of Neural Networks, has become widely used in a broad spectrum of applications. 
-While NNs have shown themselves to be powerful, a point has been reached where the time it takes to build NNs goes up exponentially without providing much better results than what simpler NNs achieve.
+While NNs have shown themselves to be powerful, a point has been reached where the time it takes to build NNs goes up exponentially. 
+Meanwhile, the results are not that much better than what simpler NNs achieve.
 
-While current NNs have shown themselves to be superior to previously developed solutions, they currently suffer from the flaw of having to remember all of the information they have seen. 
-If they lose some information while learning something new, this loss may cause them to perform worse in tasks they were previously solving well. In general, the more a network needs to do, the bigger it has to be to do it. 
+Current NNs have shown themselves to be superior to previously developed solutions.
+However, they currently suffer from the flaw of having to remember all of the information they have seen. 
+If they lose some information while learning something new, this loss may cause them to perform worse in tasks they were previously solving well. 
+In general, the more a network needs to do, the bigger it has to be to do it. 
 The need for a more extensive network leads to a performance problem where one needs costly, powerful hardware to train it in a reasonable time frame. 
-Handling the problem of more extensive networks with brute-forcing the problem through more expensive hardware is not sustainable in the long term, as eventually the network will require even more performant hardware to work with.
+Handling the problem of more extensive networks with brute-forcing the problem through more expensive hardware is not sustainable in the long term. 
+Eventually, the network will require even more performant equipment to process than what will be available on the market.
 
 This master project seeks to test creating multiple NNs that will be able to accurately predict the English translation of a phrase spoken by a person in Japanese. 
-Each NN will be trained iteratively on small batches of the dataset at a time, with the output of the NNs being one of several "super-classes." 
-For each super-class, a new NN will be generated for the data assigned to this super-class, creating new, smaller super-classes.
+Each NN will be trained iteratively on small batches of the dataset at a time, with the output of the NNs being one of several “super-classes.” 
+For each super-class, a new NN will be generated for the data assigned to this super-class, creating unique, smaller super-classes.
+
 
 \section{Keywords}
 Artificial intelligence, Neural networks, Transfer learning, Convolutional Neural Network
@@ -35,26 +40,33 @@ Artificial intelligence, Neural networks, Transfer learning, Convolutional Neura
 The research questions of this master thesis can be boiled down to the following three questions: 
 
 \begin{itemize}
-    \item How do neural networks that are iteratively re-trained using transfer learning on an increasing subset of the dataset, to group the entire dataset they receive into "super-classes“ perform? 
+    \item How do neural networks that are iteratively re-trained using transfer learning on an increasing subset of the dataset, to group the entire dataset they receive into “super-classes” perform? 
     \item How does this training technique perform when used to train neural networks in a tree hierarchy that bases itself on these super-classes?
     \item How does changing the parameters of the training process affect the neural networks and the resulting tree structures?
 \end{itemize}{}
 
 \section{Planned contributions}
-The research area of this master thesis revolves around the improvement to the scalability of neural networks. 
+The research area of this master thesis revolves around the improvement of the scalability of neural networks. 
 The first research question seeks to analyze the iterative transfer learning process of each NN by itself. 
 As the size of the dataset is increased, plugging the entire dataset into the training process will lead to time spent training increasing at minimum linearly with the dataset size.
-In addition to increased time to train, storage requirements also go up with dataset size, requiring the dataset to be stored on slower memory, and potentially even killing the training process due to insufficient resources on the weakest link in the compute chain.
-Different networks and parameters may exhibit different characteristics, and analyzing the performance of each NN by itself can bring valuable results for many different applications that would seek to use a similar iterative transfer learning process. 
+In addition to increased time to train, storage requirements also go up with dataset size, requiring the dataset to be stored on slower memory.
+Using too much memory can potentially even kill the training process due to insufficient resources on the weakest link in the computing chain.
+Different networks and parameters may exhibit different characteristics. 
+Analyzing the performance of each NN by itself can bring valuable results for many different applications that would seek to use a similar iterative transfer learning process. 
 
 The second research question seeks to expand on the results of the first by introducing the tree hierarchy concept. 
 Most NNs currently in use are single, large models that take a lot of time and processing power to train. 
-While some research has been done in using NNs in trees, this master thesis aims to research more autonomous ways for such trees to be created from the view of the neural network, rather than based on human intuition.
-As it is ultimately the neural networks that have to use the super-classes, while humans are generally interested only in the final result, the hypothesis is that the decision on how to distribute the dataset across the super-classes should also be made by the networks.
+While some research has been done in using NNs in hierarchical clusters, this thesis aims to research more autonomous ways for such trees to be created.
+The tree generation would be done from the view of the neural network, rather than based on human intuition.
+It is ultimately the neural networks that have to use the super-classes, while humans are generally interested only in the final result.
+The hypothesis is that the networks should decide on how to distribute the dataset across the super-classes.
 
 The final question aims to compare the different neural networks created during this master thesis against each other to find which NNs worked better or worse in various metrics.
 Some of the NNs could perform better in generating the root node of the tree, while suddenly collapsing somewhere deeper in the tree.
-While direct comparison between each tree will be impossible due to the autonomous nature of the tree generation process, providing some form of analysis between the NNs can provide insight into potential pitfalls that some of the trees fell into that others didn't.
+Unfortunately, a direct comparison between each tree will be impossible due to the autonomous nature of the tree generation process.
+Still, providing some form of analysis between the NNs can give insight into potential pitfalls that some of the trees fell into that others did not.
+
+
 
 
 %The planned contribution of this master thesis to the general field of Artificial Intelligence is the result of attempting to use the neural networks in a way that has not been explored much yet. Should the result of iterative training show good results, training neural networks with large datasets should become more comfortable to do on cheaper hardware. The most significant planned contribution is in the tree hierarchy solution, which if successful, should enable the training of more powerful neural networks on consumer hardware at the cost of cheap storage memory needed to store the networks. Even modest results could show valuable insight into the behavior of neural networks when used unconventionally. In the worst case, the planned contribution will be a comprehensive insight into neural networks used in this project, which could be the grounds for further research.

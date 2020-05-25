@@ -2,18 +2,37 @@
 
 %Long(est) chapter of all probably, 10-20 pages
 %Somewhat historical walkthrough through the thesis project, in order of how I did the tasks
+%Pre-section: Explain the methodology-experiment chapter division, agile thesis work
+
+%Section 0: Hardware and software used in the project
+%Hardware: Specify CPU/GPU/RAM etc used, available total storage (for flex?)
+%Software: Specify Python + Tensorflow versions (2.0 early on, 2.1 later, 2.2 available in the end but not used)
+%Software python: Include info on Librosa, Scikit and other large libraries used and why
 
 %Section 1: Dataset (5+ pages)
 %Detailed walkthrough of what I used as my dataset, processing it
-%Q: Use the "Stage 1, 2, 3, 4" terminology used in the dataset preparation?
+%Use the "Stage 1, 2, 3, 4" terminology used in the dataset preparation
+%Include results from Specialization in mobile - no, experiment 1
+%Refer to experiment 1 in Stage 3, experiment on why MFCC DCT 3 and the others were selected, with md3 being the primary
+
 
 %Section 2: Neural network used
+%Two "main" sections, first section from autumn semester, second from spring semester
+%First section define the early "model" built with the help of marine paper
+%First section refers to experiment 2, which details on the results for the custom layer
+%Second section refers to experiment 2 producing good results, final layer being used
+%Selection of the network model done by repeatedly attempting multiple combinations of parameters
+%Display a list of parameters tested
+
 %Detail the methodology used in creating the "base" neural network used in this thesis
-%Q: Some results here? Results that don't answer the questions but are relevant in development
 
 %Section 3: Loss function
 %In detail provide information on how I created my custom loss function filters, tuned the parameters
-%Here is the reason I went down from 10 classes to 3
+%Here is NOT the reason I went down from 10 classes to 3
+%Explain the logic behind the filter types, show graphs that can illustrate some of this
+%Generate graph with gnuplot like in example, more natural?
+%Explain the logic behind the filter values, why these in particular
+
 %Q: Provide this info 10->3 in methods or results? IMO methods but can see how it would be relevant in results
 
 %Section 4: Iterative training
