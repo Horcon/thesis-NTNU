@@ -17,7 +17,7 @@ The following chapter presents the methodology of the development done in this t
 For each section that has experiments associated with decisions taken during development, the intent behind the experiment is explained.
 As the thesis does not seek to answer the question of how to develop iterative re-training process or tree hierarchy generation, the experiments done during the development of this thesis are documented in chapter 4.
 
-
+\section{Dataset}
 %Section 1: Dataset (5+ pages)
 %Detailed walkthrough of what I used as my dataset, processing it
 %Use the "Stage 1, 2, 3, 4" terminology used in the dataset preparation
@@ -25,7 +25,162 @@ As the thesis does not seek to answer the question of how to develop iterative r
 %Refer to experiment 1 in Stage 3, experiment on why MFCC DCT 3 and the others were selected, with md3 being the primary
 
 
+%basic information about the dataset and its origins
+In all neural network projects, having a big dataset is critical to getting meaningful results.
+Of course, the dataset also has to be correct for the given problem that is being solved.
+For the purposes of this thesis, there was no problem in particular that was being solved.
+Unlike other networks that may need to classify certain samples into distinct classes like AlexNet and Inception, the goal for the networks created in this thesis was to group samples into classes.
+As the result of the thesis was dependent on having a big enough dataset for these groupings to be general enough, the size of the dataset was the first concern.
+
+%Dataset composition, what it is
+The original, raw dataset in this thesis was the personal media library of the student, in particular the segment consisting of Japanese animated TV shows and movies.
+As almost all of the media in this dataset contained Japanese audio with accurately timed English subtitles, small samples of audio could be extracted with a matching English translation tied to this sample.
+Due to the nature of the dataset, the English translation may carry minor artifacts in the label that would make it unsuitable for use in a neural network translator.
+In addition, longer sentences may have their appearance order reversed due to language differences.
+However, the labels provide enough information for a human operator to analyze the results of the groupings and present them in the report.
+In terms of the quality of the audio, while some noise is bound to exist in the background, same conditions apply in the real world to some extent, adding to the authenticity of the dataset.
+Measures to limit the potential bad samples in the final dataset are presented in the next subsection.
+
+
+%Line list item detailing size, length, number of files etc
+As the primary priority in selecting the dataset for this thesis was its size, the following list details the size of the raw dataset.
+\begin{itemize}
+    \item Video files: 62.508
+    \item Storage size: 32.5 TB 
+    \item Video length: Over 1000 days of uninterrupted video
+\end{itemize}{}
+
+%Dataset acquisition method, mention animebytes, curated content in terms of quality, can be relied on, always went for highest quality
+The dataset was acquired over the course of several years, mostly through the private torrent tracker AnimeBytes\footnote{\url{https://animebytes.tv/}}.
+Content on this tracker is curated over time by its users, leading to having a large library of content that can be relied on for its quality.
+Multiple versions of a particular series can exist, of which some may be ripped from a blu-ray disc while others may be downloaded from web streaming services.
+As the dataset was manually downloaded, each series can be expected to be of the highest quality that was available at the time of the download, and thus moderately depended on for use as the dataset in this thesis.
+
+%Dataset legalese, RPP last chapter, adapt the paragraph and include here
+There are some legal considerations needed given the nature in which the dataset has been acquired. 
+The entire dataset has been acquired through the use of torrents on public and private trackers throughout the last couple of years. 
+For this project, the video/audio content has been stripped to audio-only and cut into small several second long pieces. 
+Afterward, the audio was converted into different formats through a lossy process meant for use in neural networks. 
+The neural networks produced from this dataset during this master thesis are also not planned to be published. 
+Given this, it is considered that the legal considerations are not significant enough to prohibit the use of this dataset in the master thesis.
+
+\subsection{Processing steps}
+%Stage 1-4, how each step was done, refer to experiment for stage 3
+To prepare the raw dataset for use in neural networks, the dataset was processed in four stages.
+Each of these stages represents a step that the dataset has been processed in, removing potential bad samples and selecting the correct format for the final dataset.
+
+%Stage 1, extract audio and subtitles into core components, opus audio ass subs, mention picture based subs as problem, 20% of dataset did not carry a subtitle file that was compatible
+\subsubsection{Stage 1}
+%Basic intro
+The first stage of the dataset processing was to extract the audio and subtitles from the media library.
+Standardization of the formats was a central part of this process, as the media library had a wide variety of video, audio and subtitle formats.
+While some of the dataset was relatively recent and used modern formats, some of the files had used more ancient formats that haven't been used much for well over a decade.
+For this step, FFmpeg was used for its compatibility with a vast number of formats that would be able to process the dataset more or less completely.
+
+%Opus explanation
+As almost all of the storage used on the dataset is expected to be in audio, compression of the audio segment was done in this stage.
+The push for compression was fueled in part due to the fact that parts of the dataset, movie blu-ray rips in particular, used multi-channel lossless FLAC formats for the audio track.
+In some cases, the audio track alone was over 1 GB in size for little less than 2 hours of audio.
+To compress the audio, the OPUS codec\footnote{\url{https://opus-codec.org/}} was used.
+OPUS was selected for its superior quality over other codecs\cite{opus:tests}.
+To ensure that data loss due to compression would be kept to a minimum and predictable, a constant bitrate of 128 kbit/s was used.
+
+%Ass explanation
+While standardization of audio content was easily selected, differences were greater in standardization of the subtitle content.
+Throughout the years, many different formats have been used to attach text content to videos.
+In the past, subtitles were often attached as separate files with the same name as the video file.
+More recently, the Matroska container has allowed for subtitles to be combined with video files for an easier distribution of content.
+These subtitles could be very simple lists of lines with just a timestamp and the subtitle.
+In the anime community, a separate dedicated subtitle codec has been used, called Advanced SubStation Alpha\cite{wiki:advancedsub} (ASS).
+Unlike the more primitive standards that attempt to only present the text in a simple, clear manner, ASS files can contain formatting and styling information to be rendered along with video, providing among other features font and karaoke styling.
+As information pertaining to styling could be used in the later stages to filter undesired text, ASS was selected as the standard subtitle format.
+
+%Image based subtitles, 20% dataset cut on stage 1
+Unfortunately on this stage a significant part of the dataset was written off as unusable.
+While conversion of all text-based subtitles had been successful, around 20\% of the dataset used image-based subtitles like VOBSUB or HDMV-PGS, common standards used in DVDs and blu-ray discs.
+Initially, extraction of these subtitles failed silently due to a configuration error in FFmpeg not specifying these particular standards.
+After extraction of subtitles using these formats, a minor attempt using OCR software called "Subtitle Edit"\footnote{\url{https://www.nikse.dk/subtitleedit}} was conducted to convert the subtitles to text.
+Results of these attempts were unsatisfactory, with too many artifacts in the few samples processed to be considered reliable for further use.
+In addition, this process would take too long to process over 10 thousand files, with one file taking more than a couple of minutes.
+
+Ultimately, this stage produced roughly 1.6 TB of compressed audio and subtitle files.
+
+%Stage 2, extract each single audio sample from the full audio, zip it, mention process of eliminating bad items like commentary, selecting correct audio track etc
+\subsubsection{Stage 2}
+Following the standardization of the data formats, the second stage of the dataset processing sought to cut the audio content into samples based on the timestamps in the subtitle tracks.
+
+%Selecting correct tracks
+To extract the small audio samples, selecting the appropriate audio and subtitle track is necessary.
+While most of the dataset contained strictly one audio and one subtitle track, some files contained multiple audio tracks, and others contained multiple subtitle tracks.
+In most of these files, the Japanese language flag was used to identify the audio stream, and English language flag was used to identify the subtitle stream.
+Some of the streams had multiple Japanese audio streams, and a lot more had multiple English subtitle streams.
+In the case of the audio streams, most of these extra streams carried extra ID flags like "Commentary" that allowed those streams to be filtered.
+If the stream could not be filtered, the first stream was selected.
+
+%Elimination of samples based on bad tracks
+Subtitle streams were a more complicated process.
+Some of the extra subtitle streams could also be related to the aforementioned "Commentary" streams, and were subsequently filtered out.
+Other streams were specific sign and song streams, often used in conjunction with files that carried both Japanese and English audio.
+Many shows that have English dubbing retain their original Japanese intro and outro songs, in addition to specific sign translation, which these extra subtitle streams provide translations for.
+As filtering out this content was important to improve the quality of the final dataset, these tracks have been used to filter matching subtitles in the bigger subtitle file from the dataset.
+
+
+%Elimination of samples that had bad properties
+While extra streams were useful in identifying some of the bad samples, most of the subtitles required more analysis of the subtitle stream itself.
+Following the ASS specification, all subtitles that could be a relevant audio sample are likely to carry the "Dialogue" style option.
+Unfortunately, analysis of some files showed that in some cases, other tags were used for the relevant lines.
+Because of this, a black flag approach was used to remove irrelevant samples.
+Subtitle lines using the "ED", "OP", "Sign", "Song", "Comment" and "Logo" style names were removed from the dataset.
+
+%No-length samples
+In addition to these bad samples, the ASS specification permits creators to put in all sorts of visual effects in their subtitles. 
+These visual effects are also present in the same subtitle file, and had to be removed before the dataset could be considered usable.
+As styling information in the ASS file uses a lot of modifiers using the \\ character, lines including more than two of these modifiers were removed from the dataset before sample extraction.
+Newlines were excluded from this process as exceptions, being replaced with spaces before the check took place.
+Upon analysis, some relevant subtitle lines used more than two modifiers to position the text, but it was concluded that this sample loss would be insignificant.
+
+All subtitle lines that passed all checks were extracted from the audio stream to a ramdisk, and once the entire subtitle file has been processed, the resulting subtitles and labels were zipped and saved to disk.
+A total of 45.732 media files had at least one relevant audio sample for the final dataset, with the storage size being 532.4 GB.
+
+
+%Stage 3, process with librosa, mention experiment 1 that deals with the picking of the dataset sample, mention how long this would take and how much space it would take, 0.5s read in 1.5 for all variations to be generated, 0.7-0.8s if only select items were picked, still took a little over 2 weeks to process
+\subsubsection{Stage 3}
+
+
+%Stage 4, normalization and standardization, mention the code etc, 24h to process entire dataset, gen multiple versions etc
+\subsubsection{Stage 4}
+
+
+
+\subsection{Statistics}
+%Specialization in mobile report, point out length of samples and overlap of samples
+%Includes figures from specialization in mobile for sample length, probably all graphs maybe (be reasonable)
+%Mention stats from 0411 pdf, how many removed etc
+%In total, 12625 sample files with 1k each, so 12.625 samples
+
+
 %Section 2: Neural network used
+\section{Neural network}
+
+
+\subsection{Early development}
+%Minimal details on what happened in early dev and what was the groundwork for extra layer
+%Mention marine vessels as grounds for faster development, 3 layers conv + maxpool etc
+%Also mention alexnet and googlenet, last fc layer based on that
+%Mention why 10 classes were picked, 1/100 of 1000 that were used in alexnet etc, that paper that mentioned clustering, served as good start
+
+
+\subsection{Extra layer} %Title wip
+%APW report territory, experiment 2 results
+%Theoretical walkthrough ONLY, experiment chapter details work done and why
+
+\subsection{Final model}
+%Spring model dev, explain the more thorough work on the model, setting up multiple layers, how many layers
+%Experiment 3 detailing results and how the work went, no mention of this here
+%Goal is good validation accuracy and low validation loss, should acc or loss be similar the goal is to aim for both
+%Mention that it was at this stage that agg clustering was brought in to stabilize the results
+
+
 %Two "main" sections, first section from autumn semester, second from spring semester
 %First section define the early "model" built with the help of marine paper
 %First section refers to experiment 2, which details on the results for the custom layer
@@ -36,19 +191,36 @@ As the thesis does not seek to answer the question of how to develop iterative r
 %Detail the methodology used in creating the "base" neural network used in this thesis
 
 %Section 3: Loss function
+\section{Loss function}
 %In detail provide information on how I created my custom loss function filters, tuned the parameters
 %Here is NOT the reason I went down from 10 classes to 3
 %Explain the logic behind the filter types, show graphs that can illustrate some of this
 %Generate graph with gnuplot like in example, more natural?
 %Explain the logic behind the filter values, why these in particular
+%Include second filter explanation, subexperiment of loss function experiments
+
 
 %Q: Provide this info 10->3 in methods or results? IMO methods but can see how it would be relevant in results
 
+\section{Iterative re-training}
 %Section 4: Iterative training
+%Explain the purpose, massive dataset that can't fit in memory, would take forever to train
+%For the purpose of grouping data, it would be mostly superfluous, after the initial batch of data most samples should have a definitive cluster
+%The samples that don't fit the threshold are added to the small train dataset
+%The hypothesis is that the change in samples that were already certain is not huge, and possibly becomes more certain with more retraining, while samples that were uncertain become more certain even further down the dataset
+%subsection for parameters used, reference results from previous experiment for loss functions, plus threshold, control versions -1 and -2
+
 %First of the two sort of relevant to the results sections
 %Specify the parameters used in determining the correct parameters in developing iterative training
 %Specify what loss functions and parameters would used in iterative training depending on what results
 
+
+\section{Tree generation}
 %Section 5: Tree generation
 %Tree generation, same as iterative training in terms of specifying what I did, results of this goes into results/discussion
 %Specify what iterative training parameters will be used depending on the criteria in the results
+%The hypothesis is that over time, samples that get grouped together will be more and more similar, either by pure values or at least with sample text ("Hello") samples get grouped together into a cluster somewhere
+%Subsection for tested parameters, mention final experiment detailing this
+%Based on iterative train, mention what would be used to prune some of the combinations for trees, angle towards 0.8
+
+

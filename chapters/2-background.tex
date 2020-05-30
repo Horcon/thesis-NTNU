@@ -160,6 +160,35 @@ While this is common, it is not strictly necessary and can be adjusted freely.
     \label{fig:poolexample}
 \end{figure}
 
+\subsubsection{Activation functions}
+In all neural network layers, the activation function is used to scale the final output of the neuron.
+As significant variations in the input can give meaningless results to the next layer, following the layer-specific processing done on the input, this input is put through the activation function before being handed off to the next layer.
+
+%ReLU
+The standard activation function used in most neural network layers is the Rectified linear unit (ReLU) function, which simply sets all input that is negative to zero.
+All values above zero passed through ReLU are just left as-is.
+Removing negative values is advantageous when the next layers in the network need to process something while excluding values that may be unimportant to final results from further processing.
+The ability to exclude negative values is designed to mimic the brain's functionality of only sending a signal once enough energy is gathered in the neuron, mimicking the real world neurons.
+
+%Softmax
+In addition to ReLU, the Softmax activation function is often used as the activation function in the final neural network layer.
+The softmax operation reduces all input to a spectrum between 0 and 1, where all outputs sum together to 1.
+When used as the activation function of the final layer, the output of the network becomes a probability for what the given output can be.
+
+%Sigmoid
+While Softmax and ReLU are the most commonly used activation functions, any function can be theoretically used as an activation function.
+The last activation function used in this thesis is the Sigmoid function.
+The sigmoid function is a bounded, differentiable, real function\cite{wiki:sigmoid} that also scales its input to a value between 0 and 1, but unlike Softmax, the input value of 0 translates to 0.5 in the sigmoid function.
+Input over zero is scaled gradually from 0.5 towards 1, while input below zero is gradually scaled down from 0.5 to 0.
+An example of the formula can be seen in \cref{eq:sigmoid}.
+\begin{equation}
+    f(x) =  \frac{1.0}{1.0 + exp(-x)}
+    \label{eq:sigmoid}
+\end{equation}
+
+
+
+
 %Custom images for all of this, but based on theory
 
 %One more subsection tied to optimizers, loss functions and other stuff?

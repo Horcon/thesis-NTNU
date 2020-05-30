@@ -1,1 +1,24 @@
 \chapter{Results}
+
+%Results to be generated:
+%Iterative
+%Size of largest cluster for each combination, as number of iterations increases, compare each threshold as their iterations were similar
+%Variation from first network result over the iterations
+%Variations between the networks, array comparison?, pick one or two of the combinations for this 0/1, 2/3, then -1 and -2
+%Array is too big/too many combinations, compare previous/next
+%Iteration spacing between training, 22, 44, 80 etc sort of deal, convert hitlist into increasing number
+
+%Tree
+%Size of largest cache in tree, descending, max of 20? (just measure file size of next in line)
+%Number of iterations for each cluster in tree, excluding root node, descending, exists in metadata
+%Find samples and their groups, compare deep cluster with shallow cluster, see how similar these samples are
+%Control-specific -3 insight, 0.5-0.2 threshold comparison
+
+%Trees have a lot more data, processing like with iterative is unfeasible in the time limit left, not sure how good it would be anyway given different purpose
+%Cache size per node, descending (tracking the highest nodes in the trees), several graphs with different cutoffs, side by side with one cutoff shorter and one longer (left 10-15, right 35-50?)
+%Cache failure count, per branch layer, where cache failed to create a branch
+%Cache loss count, per branch layer, how many samples were lost due to failed 0.5 threshold and overflow
+%Iteration count to generate node, descending
+%Iteration graphs similar to last point in iteration, except for this
+
+%In both iteration graphs, record both hitlist and converted array

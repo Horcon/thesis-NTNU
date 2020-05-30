@@ -6,8 +6,7 @@ The following section provides details on the experiments done during this thesi
 
 %Section 0: Hardware and software used in the project
 %Hardware: Specify CPU/GPU/RAM etc used, available total storage (for flex?)
-%Software: Specify Python + Tensorflow versions (2.0 early on, 2.1 later, 2.2 available in the end but not used)
-%Software python: Include info on Librosa, Scikit and other large libraries used and why
+
 \section{Tools used in the thesis}
 The following section lists the hardware and software used during the experiments in this master thesis.
 It also lists tool-specific findings that are not relevant to mention in the other sections.
@@ -70,21 +69,137 @@ Large amounts of free storage also enabled various storage-expensive methods of 
 Also, multiple older HDDs have been used as backups and portable storage for the dataset.
 
 \subsection{Software}
+%Software: Specify Python + Tensorflow versions (2.0 early on, 2.1 later, 2.2 available in the end but not used)
+%Software python: Include info on Librosa, Scikit and other large libraries used and why
+The development platform used during this thesis has primarily been Python on a Windows 7 computer.
+
+\subsubsection{Python environment}
+%Python 3.7
+A Python environment requires a package manager to use it to the fullest extent.
+Visual Studio that the student has already had installed on the computer also included a full Python environment with Anaconda\footnote{\url{https://www.anaconda.com/}}.
+While the included version has proven itself to be unreliable and required multiple re-installations, certain features have proven themselves to be necessary throughout this thesis.
+The most crucial feature that prioritized Anaconda over picking pip was the ability to create separate virtual environments with different versions of packages installed simultaneously.
+Individual packages often require specific versions of dependencies that may not be available anymore, in which case an outdated version of the package may be installed without notice to the user.
+
+%Librosa for dataset, mention trouble with version in Anaconda
+One case of the separate environments being critical for this thesis was the Librosa\footnote{\url{https://librosa.github.io/librosa/index.html}} library.
+Librosa is a python package for music and audio analysis, which this thesis used to process the dataset with the various feature extraction methods that Librosa supports.
+Deep in the dependency chain for Librosa, a dependency conflict arose that forced Anaconda to install version 0.6.3 of Librosa, while the latest current version is 0.7.2.
+As the feature extraction methods are based on scientific algorithms and thus should not change between versions, each new version of a package can include more methods that the user expects to have available.
+A separate environment dedicated exclusively for Librosa had to be developed to handle this dependency conflict to resolve the matter in the thesis.
+
+
+%Tensorflow 2.0, 2.1 later on
+The Tensorflow\footnote{\url{https://www.tensorflow.org/}} package was selected for the development of the thesis to create and train neural networks.
+As Google develops TensorFlow, one of the leading firms in Artificial Intelligence research that also employs researchers that published the Inception paper\cite{szegedy2014going}, it was picked as the superior choice.
+Shortly before the thesis project started the development of neural networks, version 2.0 of Tensorflow was released.
+This thesis used version 2.0 at the beginning of the thesis, updating to version 2.1 in the middle of the thesis.
+Version 2.2 was released in the final month of the thesis. 
+While certain features that were released in this version would be exciting to use during development, it was not used to maintain the stability of the thesis results.
+
+As noted in the hardware section, multiple Python consoles have been used to train multiple neural networks simultaneously.
+To achieve this, Tensorflow needs to be configured only to use a limited amount of memory on the GPU.
+Under regular operation, Tensorflow will attempt to use all available memory for itself, which will lead to potential system instability and hanging even if only one network is trained at a time.
+Because of the recent update from 1.x versions of Tensorflow, a compatibility layer needs to be used in current versions of Tensorflow as the equivalent functionality has not been found in versions 2.0 and higher.
+The memory fraction parameter has to be changed to the desired level to adjust the maximum memory used by Tensorflow, code for which is provided in the code listing below.
+It is important to note that the memory fraction does not represent the actual memory fraction used by Python, and is a significant percentage higher than the parameter set in the code.
+A tool provided by Nvidia called Nvidia SMI had been used to monitor resource utilization during the development of the minimal parameters that could provide a stable and fast environment.
+
+\lstinputlisting[
+    caption={Code to reduce memory usage of Tensorflow in a single console, valid for Tensorflow 2.1},
+    label=lst:pythonfile,
+    language=Python
+]{listings/memcode.py}
+
+%Tensorboard for experiment results
+The Tensorboard\footnote{\url{https://www.tensorflow.org/tensorboard}} package was used to process the results of the various experiments detailed in the later sections of this chapter.
+Tensorboard is a visualization toolkit developed for Tensorflow.
+The primary feature used in the toolkit was the ability to record, view, and sort individual neural network tests.
+As Tensorboard integrates easily in Tensorflow, this allowed for agile development of the test code, where tests were rapidly coded, run, and analyzed.
+However, given the sheer amount of tests run during this thesis, the thesis has stumbled across a critical performance bug.
+Tensorboard attempts to record the state of the neural network as it is trained, and recreate a visual graph for the training process.
+While this may be a useful feature for other projects, it was not relevant for this thesis, while simultaneously causing some experiments to max out the RAM on the computer.
+The features that cause this bug to manifest can be disabled by using Anacondas' capacity to create custom environments, creating an environment exclusively for Tensorboard.
+Other packages can also be installed in this environment; however, Tensorflow has to be explicitly excluded from this environment.
+Doing so causes Tensorboard to enter a restricted feature mode, which allows for much larger tests to be viewed with minimal lag.
+
+%Scikit-learn for clustering
+%Spyder IDE, Anaconda environment
+%Pickle for data saving
+In addition to the above packages, several other packages have been used extensively in the project.
+To create the hierarchical clusters for the first clusters, scikit-learn\footnote{\url{https://scikit-learn.org/stable/index.html}} has been used.
+Scikit-learn provides a lot of various functions that are useful in neural network development.
+For the IDE, Anaconda comes pre-installed with Spyder\footnote{\url{https://www.spyder-ide.org/}}, which was used for the development of the thesis.
+Lastly, the pickle package in Python was used to save results to disk, along with handling cache logic.
+
+
+\subsubsection{Other}
+%Powershell for dataset s1 and s2
+%FFMpeg for dataset extraction, processing
+In addition to using Python during most of the development, Powershell was used in the early stages of dataset preparation.
+Powershell was chosen for these first tasks due to earlier experience in using Powershell to maintain the media library used as the dataset in the thesis.
+As Powershell would be satisfactory in the first tasks, it was chosen to be used over Python due to students lacking experience in using Python at the time.
+Since the data extraction script was intended to be run only once, writing the scripts quickly and starting to develop Python code was preferable, especially given the expected time to process the dataset.
+The Powershell version used in the thesis was 5.1.
+
+The media converter FFmpeg\footnote{\url{https://ffmpeg.org/}} was used to facilitate the processing of the dataset into a standardized form.
+FFmpeg supports a wide variety of video, audio, and subtitle formats.
+The ability to process any input was critical when various video files in the dataset had an unknown number of codecs used to encode them.
+Some of the more recent media may use more modern formats, while older media may use some more obscure format that other tools could fail to process.
+As each sample in the final dataset needed to carry only the particular subtitle fragment, the ability to specify file length options with a command line was also necessary for the selection of the conversion tool.
+Since losing samples due to shortcomings in the selected tool would be undesirable, FFmpeg fit the requirements the most.
+The FFmpeg version used in the thesis was 4.2.
+
+
+
+%Section 1: Dataset selection, why mfcc dct 3 and others got picked, here is actual first nn development
+%Initial dataset of around 38k samples, 5 series picked one from each drive
+%Method, initial neural network, 10 neuron softmax + 1000 neuron next layer, generate results, no validation method
+%To verify that the results were not overfit, use results of this on nn of same architecture minus 1k layer
+%Control version is pure random assignment that produced 9-12% accuracy (purely random, no structure in data for network to detect)
+%Important metrics were: highest class size, number of classes (higher is better), vloss and vacc
+%Bullet list of all variants tested, mention extra detail about mfcc and why bigger was chosen
+%Best in class is mfcc dct 3, followed by c cqt 12, small variants could prove useful of which spec con with fft window set to 4096 was the most relevant
+%Because of relationship to best results, dct 2 was also generated for mfcc, all variants of c cqt were generated due to smaller size and better results than 12 for class size
+%Primary dataset is based on mfcc dct 3 in this thesis, rest has not been used due to lack of time to consider their use
+
+%Section 2: 1010 neuron idea verification, model based on ex 1
+%Following the selection of the dataset, 1010 neuron idea was tested
+%Custom layer was developed with the weights adjusted in the last 10 layers
+%Pictures from APW report
+%Additional theories tested, mention extra options, why they were not chosen (extra workload on processing, absolutely uninteresting results compared to just using custom layer and going forward)
+%Important to mention as normal layer with both extra counter-measures appears to come close to custom layer results
+
+%Section 3: Neural network development in spring
+%Methodology writeup, tons of combinations
+%Section 1 to find good number of conv layers
+%Section 2 pre-3-cluster or layer freeze modelling, table with results and subsequent next tests
+%Section 3 final model, based on later experience, model parameters did not appear to be all that relevant in the dataset
 
 
 %Lots of graph pages in this section
 %10-20 pages? but lots of pictures
 
-%Section 1: Loss function hyperparams?
+%Section 4: Loss function hyperparams?
 %Results justifying why I went with the loss function parameters, the final last result
 %Q: Had a "bad" batch of results that maybe weren't as relevant, include but state it used an older version?
+%Section 1 on before 3clusters
+%Section 2 on before layer freeze attempt
+%Section 3 final results, which were "best in class", some had more trouble while others didn't?
 
-%Section 2: Iterative training
+
+%Section 5: Iterative training
 %Main section detailing the big results from iterative training, all different ways to arrange data
-%Results meant to answer both first research questions, but not tied directly to them
 %Provide as broad of a platform for discussion in the next section
+%As results are in next chapters, discuss experiment parameters and how the experiment went?
+%More technical part compared to methodology
 
-%Section 3: Tree generation
+
+%Section 6: Tree generation
 %Same but for trees
+%Uses resulting networks from iter train as root nodes, since it's same shit
+%Based on the cluster collapse down to 2 clusters in previous experiment, uses 0.8 as threshold for training
+%0.5 as default threshold to be used in next tree, control version -3 could afford smaller numbers
+%Time it takes to generate trees, mention how combination 3 finished on FUCKING FRIDAY before report handin?
 %As many results as possible for the discussion section
 
