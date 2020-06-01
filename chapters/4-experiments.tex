@@ -20,12 +20,13 @@ A table with the primary hardware used in this thesis can be found in \cref{tab:
     \centering
     \begin{tabular}{|c|c|c|c|c|}
         \hline
-        Part type & Name & Main clock & Mem clock & Total memory size\\ \hline
-        GPU & RTX 2080 Ti & 1.65 Ghz & 7000 Mhz & 11 GB GDDR5\\ \hline
-        CPU & Intel i7 4790k & 4.00 GHz & 1866 Mhz & 32 GB DDR3\\ \hline
-        SSD & 2x Samsung 860 EVO & & & 2TB \\ \hline
-        HDD & 5x 12TB + 1x 10 TB & & & 70 TB \\ \hline
-        Off. HDD & 5x 4 TB & & & 20 TB \\ \hline
+        Part type & Name & Main speed & Total memory size\\ \hline
+        GPU & RTX 2080 Ti & 1.65 Ghz & 11 GB GDDR5\\ \hline
+        CPU & Intel i7 4790k & 4.00 GHz & 32 GB DDR3\\ \hline
+        Motherboard & Z97X-UD5H-BK & & \\ \hline
+        SSD & 2x Samsung 860 EVO & 540 MB/s & 2TB \\ \hline
+        HDD & 5x 12TB + 1x 10 TB & 160 MB/s & 70 TB \\ \hline
+        Off. HDD & 5x 4 TB & 100 MB/s & 20 TB \\ \hline
         
     \end{tabular}
     \caption{Hardware specs}
@@ -73,6 +74,27 @@ Also, multiple older HDDs have been used as backups and portable storage for the
 %Software: Specify Python + Tensorflow versions (2.0 early on, 2.1 later, 2.2 available in the end but not used)
 %Software python: Include info on Librosa, Scikit and other large libraries used and why
 The development platform used during this thesis has primarily been Python on a Windows 7 computer.
+\cref{tab:software} details the different versions of the software used for development in the thesis.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        Name & Version\\ \hline
+        Anaconda & 2019.10\\ \hline
+        Python & 3.7\\ \hline
+        TensorFlow & 2.0, 2.1\\ \hline
+        TensorBoard & 2.0, 2.1\\ \hline
+        Librosa & 0.7.2\\ \hline
+        Scikit-learn & 0.22.2\\ \hline
+        Spyder & 3.3.6, 4.1.2\\ \hline
+        PowerShell & 5.1\\ \hline
+        FFmpeg & 4.2\\ \hline
+        
+    \end{tabular}
+    \caption{Software versions}
+    \label{tab:software}
+\end{table}
 
 \subsubsection{Python environment}
 %Python 3.7
@@ -154,6 +176,137 @@ The FFmpeg version used in the thesis was 4.2.
 
 
 %Section 1: Dataset selection, why mfcc dct 3 and others got picked, here is actual first nn development
+\section{Dataset selection}
+\label{ex:dataset}
+
+The goal of this experiment was to investigate if neural networks could produce any relevant results for the thesis and determine which of the function combinations would be best suited to proceed with.
+\subsection{Experiment setup}
+The first experiment revolved around a minimalist neural network to select the appropriate function combination to use in Librosa to generate the dataset for the rest of the thesis.
+A table detailing each layer in the network can be seen in \cref{tab:earlymodel}.
+
+Three one-dimensional convolution layers start the network, followed with a standard max pool layer.
+An operational flattening layer is added to make the layers fit into the dense layers.
+One dense layer is added before the final two layers, to serve as an abstraction of the input data.
+Then, a dense layer with the softmax activation function is added to the network.
+The softmax layer serves as the classification layer, forcing the network to pick one of the neurons to classify the sample into.
+An extra dense layer is added with the sigmoid activation function to represent the dataset
+This layer represents the dataset used in this experiment, and each sample maps to their neuron in this layer.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Layer type & Parameters & Activation\\ \hline
+        Conv1d & 64 filters, size 3 & ReLU\\ \hline
+        Conv1d & 64 filters, size 3 & ReLU\\ \hline
+        Conv1d & 64 filters, size 3 & ReLU\\ \hline
+        Max pool & Size 2 & ReLU\\ \hline
+        Flatten & &\\ \hline
+        Dense & 250 & ReLU\\ \hline
+        Dense & 10 & Softmax \\ \hline
+        Dense & 1000 & Sigmoid \\ \hline
+    \end{tabular}
+    \caption{Early neural network model}
+    \label{tab:earlymodel}
+\end{table}
+
+The process of getting the results can be summarized as follows:
+\begin{itemize}
+    \item Train a fresh network on the entire dataset.
+    \item Remove the last layer
+    \item Run a prediction on the dataset
+    \item Generate a new instance of the network, minus the last layer
+    \item Train the network on the dataset using a 70\% train and 30\% validation split
+\end{itemize}{}
+
+By creating a new network and training the network based on the results of the first, the goal was to determine if the network was able to find any features to group samples autonomously.
+To control for potential overfit errors, in addition to the standard validation loss and accuracy values, the number of classes and the size of the largest class was tracked.
+Therefore, the best result would be the function combination that achieved the best performance in all three combinations.
+
+\subsubsection{Dataset}
+Using the entire dataset for this experiment was not yet possible, both because it did not exist in the correct form yet, and that the neural network was built to handle only one thousand networks, to begin with.
+For this experiment, a selection of around 38 thousand samples were processed in all function combinations.
+
+The function combinations could consist of the following options:
+
+\begin{itemize}
+    \item FFT window size: 1024, 2048, 4096
+    \item n\_chroma: 12, 24, 48
+    \item DCT: 2, 3
+    \item Power: 1, 2, 3
+    \item Order: 0, 1, 2
+    \item Center: True, False
+\end{itemize}{}
+
+The functions that were considered and the parameters that were tried with them are presented in \cref{tab:ex1dataset}.
+In total, 67 possible combinations were tried.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        Function type & Parameter type\\ \hline
+        chroma\_stft & FFT, n\_chroma\\ \hline
+        chroma\_cqt & n\_chroma\\ \hline
+        chroma\_cens & n\_chroma\\ \hline
+        melspectrogram & FFT, Power\\ \hline
+        mfcc & DCT\\ \hline
+        rms & FFT\\ \hline
+        spectral\_centroid & FFT, Center\\ \hline
+        spectral\_bandwidth & FFT\\ \hline
+        spectral\_contrast & FFT, Center\\ \hline
+        spectral\_flatness & FFT, Power\\ \hline
+        spectral\_rolloff & FFT\\ \hline
+        poly\_features & FFT, Order\\ \hline
+        tonnetz & \\ \hline
+        zero\_crossing\_rate & \\ \hline
+    \end{tabular}
+    \caption{Librosa functions that were tested}
+    \label{tab:ex1dataset}
+\end{table}
+
+\subsubsection{Control group}
+
+A control test was run to verify that the network achieved a useful result.
+The control test consisted of training the neural network model on a randomly generated group of classes.
+Should the experiment be successful, then the results of the tested networks will easily surpass the control group.
+In addition, if the control group scored a high level of accuracy, different problems with the neural network itself could be highlighted.
+
+\subsection{Experiment results}
+
+The results that were used for further work in the thesis are listed in \cref{tab:ex1results}.
+While some of the results completely removed some functions entirely, others presented very good results.
+As expected, the control group achieved accuracy rates within the proximity of 10\%, which given the ten output classes, means that the network failed to find anything in the control group.
+
+In the experiment, however, the results were much better.
+Mel-frequency cepstrum coefficients with the Discrete Cosine Transform set to three provided the best results of all.
+While the Constant-Q chromagram has marginally better results in the loss and accuracy, its highest class count is significantly higher.
+The higher largest size of the 12 chroma test is caught up by the other two combinations, indicating the potential for improvement.
+Spectral contrast has also shown some promising results. 
+However, the loss accuracy values are considered to be too perfect on the false parameter test, indicating potential pitfalls in using it as the primary dataset.
+
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Function type & Param type & Loss/Acc & Class count and largest size\\ \hline
+        Control group & - & - / 9-12\% & - \\ \hline
+        MFCC & DCT 2 & 0.6 / 0.86 & 10 - 203\\ \hline
+        MFCC & DCT 3 & 0.17 / 0.94 & 8 - 181\\ \hline
+        chroma\_cqt & 12 & 0.16 / 0.95 & 8 - 220\\ \hline
+        chroma\_cqt & 24 & 0.59 / 0.88 & 10 - 203\\ \hline
+        chroma\_cqt & 48 & 0.52 / 0.91 & 10 - 187\\ \hline
+        spectral\_contrast & 4096, False & 0.01, 0.99 & 8 - 225\\ \hline
+        spectral\_contrast & 4096, True & 0.64, 0.88 & 9 - 204\\ \hline
+    \end{tabular}
+    \caption{Experiment 1 results}
+    \label{tab:ex1results}
+\end{table}
+
+Ultimately, these three different function types have been determined to be the best options to use for the rest of the thesis.
+Of these, MFCC with DCT 3 was the only one used, as no issues with the dataset have arisen that would require a dataset change.
+
 %Initial dataset of around 38k samples, 5 series picked one from each drive
 %Method, initial neural network, 10 neuron softmax + 1000 neuron next layer, generate results, no validation method
 %To verify that the results were not overfit, use results of this on nn of same architecture minus 1k layer

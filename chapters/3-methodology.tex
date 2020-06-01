@@ -323,29 +323,29 @@ Due to the nature of the data in the percentage graph, one overlap causes two re
 %Section 2: Neural network used
 \section{Neural network}
 During the course of this thesis, multiple neural network structures were tested with multiple parameters to determine the best network to use on the dataset.
-As in the beginning of the thesis, the experience of the student with developing neural networks was negligible, this development process served both an educational and exploratory purpose.
-
+As at the beginning of the thesis, the experience of the student with developing neural networks was negligible, which made this development process useful in both an educational and exploratory purpose.
+Each of the subsections mentions the methodology used in an associated experiment.
 
 \subsection{Early development}
 %Minimal details on what happened in early dev and what was the groundwork for extra layer
 %Mention marine vessels as grounds for faster development, 3 layers conv + maxpool etc
 Early development of the neural network model has been a very chaotic process of learning new features of neural networks, applying them to the first experiment, and seeing what would stick.
-During this time, the Classification of Marine Vessels thesis written by a fellow NTNU student served as a helpful guide in using neural networks for the purpose of audio processing.%cite
+During this time, the Classification of Marine Vessels\cite{marine} thesis written by a fellow NTNU student served as a helpful guide in using neural networks for audio processing.
 
 %Find details on this model
-The first neural network model consisted of three dense layers, followed b
-Unfortunately, this model never achieved any stable results whatsoever, and rarely achieved results better than the random classification used as the test in experiment 1.
-Following repeated failures, the three dense layers were replaced with one-dimensional convolution layers, all containing 64 filters and filter size of 3.
+The first neural network model in the thesis consisted of three dense layers, followed by the final dense output layer.
+Unfortunately, this model never achieved any stable results, and rarely achieved results better than the random classification used as the control group in \autoref{ex:dataset}.
+Following repeated failures, the three dense layers were replaced with one-dimensional convolution layers, all containing 64 filters and a filter size of 3.
 
 %Also mention alexnet and googlenet, last fc layer based on that
-Basing myself on the AlexNet and Inception papers, the early model has also included a single classification layer towards the end of the model.
-Since unlike Inception the network data was not flattened during the processing of the data throughout the network, a flattening layer was included before this classification layer.
+Basing the network structure on the AlexNet\cite{Krizhevsky:2017:ICD:3098997.3065386} and Inception\cite{szegedy2014going} papers, the early model has also included a single classification layer towards the end of the model.
+Since unlike Inception, the network data was not flattened during data processing throughout the network, a flattening layer was included before this classification layer.
 
 %Mention why 10 classes were picked, 1/100 of 1000 that were used in alexnet etc, that paper that mentioned clustering, served as good start
-Finding more inspiration in the mentioned papers, multiples of 1000 samples were used in the early development of the neural network model.
-As the goal of the thesis has been to group audio samples in an autonomous manner, a final dense layer representing the output layer was added to the network, with a neuron count of 10.
-The decision to spread the 1000 samples across 10 classes was made in part due to the findings of the xx paper on xx, and also on the basis of the class number being easily divisible with the number of samples used.
-
+Multiples of 1000 samples were used in the early development of the neural network model, based on the number of classes used in the papers mentioned above.
+As the goal of the thesis has been to group audio samples autonomously, a dense layer representing the output layer was added to the network, with a neuron count of 10, followed by another with a neuron count of 1000.
+The decision to spread the 1000 samples across ten classes was made based on the related work\cite{ClusterExample}, excluding more than 15-20 classes from being used.
+The ten classes were picked to make the division into classes more simple.
 
 
 \subsection{Extra layer} %Title wip
