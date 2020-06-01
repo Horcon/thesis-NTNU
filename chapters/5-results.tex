@@ -28,7 +28,53 @@ As the results can be broken up to three general types, the resulting graphs are
 
 %Size of largest cluster for each combination, as number of iterations increases, compare each threshold as their iterations were similar
 \subsection{Size of clusters over the iterations}
-xx, detail the size of the result clusters as the number of iterations increases.
+
+\begin{figure}  % order of priority: h here, t top, b bottom, p page
+  \centering
+  \includegraphics[width=.7\textwidth]{figures/largest-0.8.png}
+  \caption{Largest cluster over the iterations, with 0.8 iteration threshold}
+  \label{fig:iter:largestcluster0.8}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/largest-0.5.png}
+        \caption{0.5 iteration threshold}
+        \label{sfig:iter:largestcluster0.5}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/largest-0.6.png}
+        \caption{0.6 iteration threshold}
+        \label{sfig:iter:largestcluster0.6}
+    \end{subfigure}
+    \caption{Largest cluster over the iterations, with 0.5 and 0.6 iteration threshold}
+    \label{fig:iter:largestcluster0.50.6}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/largest-0.7.png}
+        \caption{0.7 iteration threshold}
+        \label{sfig:iter:largestcluster0.7}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/largest-0.9.png}
+        \caption{0.9 iteration threshold}
+        \label{sfig:iter:largestcluster0.9}
+    \end{subfigure}
+    \caption{Largest cluster over the iterations, with 0.7 and 0.9 iteration threshold}
+    \label{fig:iter:largestcluster0.70.9}
+\end{figure}
+
+\cref{fig:iter:largestcluster0.8}, \cref{fig:iter:largestcluster0.50.6}, and \cref{fig:iter:largestcluster0.70.9} detail the size of the result clusters as the number of iterations increases.
 
 As the size of the clusters is the easiest value to track across the iterations, it is listed first.
 In fact, partial cluster size results were used to make the decision on which iteration threshold to pick for experiment xx.
@@ -44,14 +90,60 @@ xx present the results for this subsection.
 
 %Variation from first network result over the iterations
 \subsection{Variation between first iteration and the following iterations}
+
+
+
 The goal of the re-training process is to train the network more, faster than just using the entire dataset and a big data center worth of hardware.
 However, large variations over the course of the entire training process can indicate that the parameters do not converge into a particular cluster group.
 While the first iteration is expected to not be the perfect network immediately, it is still expected to be a general approximation of the problem, and major changes to the initial cluster group can indicate problems in the combinations.
 
 To represent the change as something more significant than a minor rounding error, only changes of 0.1 or more are tracked.
-xx present the number of samples that had a change in the highest class.
-xx present how many values changed in what magnitude in the cases where the value went up from the first prediction.
-xx present how many values changed in what magnitude in the cases where the value went down from the first prediction.
+\cref{fig:iter:varfirst0.8}, \cref{fig:iter:varfirst0.50.6}, and \cref{fig:iter:largestcluster0.70.9} present the number of samples that had a change in the highest class.
+
+\begin{figure}  % order of priority: h here, t top, b bottom, p page
+  \centering
+  \includegraphics[width=.7\textwidth]{figures/varfirst-0.8.png}
+  \caption{Variation between first and next iterations, with 0.8 iteration threshold}
+  \label{fig:iter:varfirst0.8}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/varfirst-0.5.png}
+        \caption{0.5 iteration threshold}
+        \label{sfig:iter:varfirst0.5}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/varfirst-0.6.png}
+        \caption{0.6 iteration threshold}
+        \label{sfig:iter:varfirst0.6}
+    \end{subfigure}
+    \caption{Variation between first and next iterations, with 0.5 and 0.6 iteration threshold}
+    \label{fig:iter:varfirst0.50.6}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/varfirst-0.7.png}
+        \caption{0.7 iteration threshold}
+        \label{sfig:iter:varfirst0.7}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/varfirst-0.9.png}
+        \caption{0.9 iteration threshold}
+        \label{sfig:iter:varfirst0.9}
+    \end{subfigure}
+    \caption{Variation between first and next iterations, with 0.7 and 0.9 iteration threshold}
+    \label{fig:iter:varfirst0.70.9}
+\end{figure}
 
 %Variations between the networks, array comparison?, pick one or two of the combinations for this 0/1, 2/3, then -1 and -2
 %Array is too big/too many combinations, compare previous/next
@@ -62,16 +154,104 @@ If the variation between the iterations remains large, it could indicate that th
 
 The result in this section mimic the previous section, only with a different set of results.
 To represent the change as something more significant than a minor rounding error, only changes of 0.1 or more are tracked.
-xx present the number of samples that had a change in the highest class.
-xx present how many values changed in what magnitude in the cases where the value went up from the first prediction.
-xx present how many values changed in what magnitude in the cases where the value went down from the first prediction.
+\cref{fig:iter:varneigh0.8}, \cref{fig:iter:varneigh0.50.6}, and \cref{fig:iter:varneigh0.70.9} present the number of samples that had a change in the highest class.
+
+\begin{figure}  % order of priority: h here, t top, b bottom, p page
+  \centering
+  \includegraphics[width=.7\textwidth]{figures/varneigh-0.8.png}
+  \caption{Variation between neighbor iterations, with 0.8 iteration threshold}
+  \label{fig:iter:varneigh0.8}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/varneigh-0.5.png}
+        \caption{0.5 iteration threshold}
+        \label{sfig:iter:varneigh0.5}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/varneigh-0.6.png}
+        \caption{0.6 iteration threshold}
+        \label{sfig:iter:varneigh0.6}
+    \end{subfigure}
+    \caption{Variation between neighbor iterations, with 0.5 and 0.6 iteration threshold}
+    \label{fig:iter:varneigh0.50.6}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/varneigh-0.7.png}
+        \caption{0.7 iteration threshold}
+        \label{sfig:iter:varneigh0.7}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/varneigh-0.9.png}
+        \caption{0.9 iteration threshold}
+        \label{sfig:iter:varneigh0.9}
+    \end{subfigure}
+    \caption{Variation between neighbor iterations, with 0.7 and 0.9 iteration threshold}
+    \label{fig:iter:varneigh0.70.9}
+\end{figure}
 
 %Iteration spacing between training, 22, 44, 80 etc sort of deal, convert hitlist into increasing number
 \subsection{Number of sample files between training iterations}
 Finally, an important variable to analyze is the effect of the iterative re-training over time, as the dataset is processed.
 While in the beginning little is known about the dataset, as more and more information is gleaned on the dataset, it is expected that the network becomes more and more capable to handle information it has not seen yet.
 Should the number of files between iterations not change, or even go down, it could indicate that the network loses information in the training process, or that the samples have a very low amount of common features between each other.
+\cref{fig:iter:iterfiles0.8}, \cref{fig:iter:iterfiles0.50.6}, and \cref{fig:iter:iterfiles0.70.9} show the change in number of files used by the various function options over the course of the iterative re-training process.
 
+\begin{figure}  % order of priority: h here, t top, b bottom, p page
+  \centering
+  \includegraphics[width=.7\textwidth]{figures/iterfiles-0.8.png}
+  \caption{Change in number of sample files between iterations, with 0.8 iteration threshold}
+  \label{fig:iter:iterfiles0.8}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/iterfiles-0.5.png}
+        \caption{0.5 iteration threshold}
+        \label{sfig:iter:iterfiles0.5}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/iterfiles-0.6.png}
+        \caption{0.6 iteration threshold}
+        \label{sfig:iter:iterfiles0.6}
+    \end{subfigure}
+    \caption{Change in number of sample files between iterations, with 0.5 and 0.6 iteration threshold}
+    \label{fig:iter:iterfiles0.50.6}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/iterfiles-0.7.png}
+        \caption{0.7 iteration threshold}
+        \label{sfig:iter:iterfiles0.7}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/iterfiles-0.9.png}
+        \caption{0.9 iteration threshold}
+        \label{sfig:iter:iterfiles0.9}
+    \end{subfigure}
+    \caption{Change in number of sample files between iterations, with 0.7 and 0.9 iteration threshold}
+    \label{fig:iter:iterfiles0.70.9}
+\end{figure}
 
 %Tree
 \section{Tree results}
@@ -96,7 +276,26 @@ Among the most important results for the tree generation are the sizes of the ca
 Some function options could distribute their dataset more evenly, while others could could heavily lean towards putting all samples in just one class.
 Furthermore, the control groups could provide same or better results than the developed experiment, casting doubt into the need for the extra processing steps.
 
-xx show the size of the cache, descending from the largest to smallest.
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/treenodecache-10.png}
+        \caption{Largest 10 caches}
+        \label{sfig:tree:treecache10}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/treenodecache-25.png}
+        \caption{Largest 25 caches}
+        \label{sfig:tree:treecache25}
+    \end{subfigure}
+    \caption{Largest tree node caches in descending order. All start from full dataset.}
+    \label{fig:tree:treecache}
+\end{figure}
+
+\cref{fig:tree:treecache} shows the size of the cache, descending from the largest to smallest.
 As each tree can have different trees putting samples in differently named clusters, the names of the clusters are ignored.
 
 %Number of iterations for each cluster in tree, excluding root node, descending, exists in metadata
