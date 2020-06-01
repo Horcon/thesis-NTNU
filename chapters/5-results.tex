@@ -305,9 +305,27 @@ Using the iterative re-training process in the tree generation is a very dynamic
 However, it can also show signs of failure if it takes more and more iterations to train each next node in the tree.
 Iterative re-training adds a constant number of samples per iteration to the training process, which can in the worst case end up using the entire dataset.
 
-xx show the number of iterations used in the tree nodes, descending from largest to smallest.
-xx show each function combinations number of sample files between training iterations.
-To not pollute the figures too much, only the ten iterations with the highest number of iterations are included.
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/treeretrainiter10.png}
+        \caption{Largest 10 iterations}
+        \label{sfig:tree:treeiter10}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/treeretrainiter25.png}
+        \caption{Largest 25 iterations}
+        \label{sfig:tree:treeiter25}
+    \end{subfigure}
+    \caption{Largest tree node iterations in descending order. Excluding full dataset.}
+    \label{fig:tree:treeiter}
+\end{figure}
+
+
+\cref{fig:tree:treeiter} show the number of iterations used in the tree nodes, descending from largest to smallest.
 
 %Both node failure and sample loss
 \subsection{Failed node generation per branch layer}
@@ -317,8 +335,23 @@ Second, every time a tree node receives less than 20 thousand samples to work wi
 How this process has developed over the course of each tree generation is a valuable insight into how the tree has formed, and its structure as a whole.
 Each tree node can only lose so many samples, meaning that if the tree does not distribute samples enough, it will be very narrow.
 
-xx shows how many nodes failed to be created on a per branch level.
-xx shows how many samples were lost during the tree generation process on a per branch level.
+\cref{fig:tree:nodefail} shows how many nodes failed to be created on a per branch level.
+
+\begin{figure}  % order of priority: h here, t top, b bottom, p page
+  \centering
+  \includegraphics[width=.7\textwidth]{figures/treenodefail.png}
+  \caption{Nodes that failed to be created due to insufficient samples in the cache}
+  \label{fig:tree:nodefail}
+\end{figure}
+
+\cref{fig:tree:sampleloss} shows how many samples were lost during the tree generation process on a per branch level.
+
+\begin{figure}  % order of priority: h here, t top, b bottom, p page
+  \centering
+  \includegraphics[width=.7\textwidth]{figures/treesampleloss.png}
+  \caption{Samples left per branch level over the course of the tree generation}
+  \label{fig:tree:sampleloss}
+\end{figure}
 
 %Find samples and their groups, compare deep cluster with shallow cluster, see how similar these samples are
 \subsection{Comparison between samples classified by the tree}
@@ -333,9 +366,47 @@ Due to the nature of the softmax layer, with a cache threshold of 0.5 only one n
 Using a lower cache threshold enabled the possibility of multiple nodes receiving the same sample, inflating the original dataset over the course of the tree generation.
 
 The results of the control group can be compared with the other trees through the combination using the 0.5 cache threshold.
-xx displays the cache size of the nodes in the control trees.
-xx shows how many nodes failed to be created, and the loss of samples on a per branch level.
+\cref{fig:tree:treecontrolcluster} displays the cache size of the nodes in the control trees.
 
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/treecontrolcluster10.png}
+        \caption{Largest 10 clusters}
+        \label{sfig:tree:treecontrolcluster10}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/treecontrolcluster25.png}
+        \caption{Largest 25 clusters}
+        \label{sfig:tree:treecontrolcluster25}
+    \end{subfigure}
+    \caption{Largest tree node clusters in the control group, in descending order. Including full dataset.}
+    \label{fig:tree:treecontrolcluster}
+\end{figure}
+
+\cref{fig:tree:treecontrolnodesample} shows how many nodes failed to be created, and the loss of samples on a per branch level.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/treecontrolnodefail.png}
+        \caption{Node failures}
+        \label{sfig:tree:treecontrolnode}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/treecontrolsampleloss.png}
+        \caption{Samples left}
+        \label{sfig:tree:treecontrolsample}
+    \end{subfigure}
+    \caption{Node failures and samples left per branch level in the control group.}
+    \label{fig:tree:treecontrolnodesample}
+\end{figure}
 
 %Trees have a lot more data, processing like with iterative is unfeasible in the time limit left, not sure how good it would be anyway given different purpose
 %Cache size per node, descending (tracking the highest nodes in the trees), several graphs with different cutoffs, side by side with one cutoff shorter and one longer (left 10-15, right 35-50?)
