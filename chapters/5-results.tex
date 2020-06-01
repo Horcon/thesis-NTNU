@@ -1,18 +1,142 @@
 \chapter{Results}
 
+%Template:
+%Result name
+%Why it is generated
+%Result figures
+
+Results produced in this thesis stem from the final two experiments.
+First, from the iterative re-training of the neural network.
+Then, from using the iterative re-training to create a classification tree.
+
+As the experiments did varying amounts of repeating steps that can magnify potential errors in the final results, the results are presented in as broad view as possible.
+This is done to both highlight the valuable information about the experiments, while also to shine a light on the potential errors done in the experiments.
+
 %Results to be generated:
 %Iterative
+\section{Iterative re-training results}
+This section goes through the entire result dataset for experiment xx, in various different forms.
+The parameters used in the various examples are:
+
+\begin{itemize}
+    \item Function option, -2, -1, 0, 1, 2, 3
+    \item Iteration threshold: 0.5, 0.6, 0.7, 0.8, 0.9
+\end{itemize}{}
+An explanation of these values is listed in section xx.
+The results are based on parsing the entire dataset with the neural network created on each iteration of the re-training process.
+As the results can be broken up to three general types, the resulting graphs are broken up into different groups where appropriate.
+
 %Size of largest cluster for each combination, as number of iterations increases, compare each threshold as their iterations were similar
+\subsection{Size of clusters over the iterations}
+xx, detail the size of the result clusters as the number of iterations increases.
+
+As the size of the clusters is the easiest value to track across the iterations, it is listed first.
+In fact, partial cluster size results were used to make the decision on which iteration threshold to pick for experiment xx.
+
+%Values of the highest classification, how certain the network becomes over the iterations in its results
+\subsection{Value of the highest classifications over the iterations}
+The value of the highest classification is also an important characteristic to track across the iterations.
+Should the cluster size vary wildly with the highest classification value remaining the same, it could indicate a heavy overfit in the network and flimsy reasoning for the cluster separation.
+In addition, the goal of the iterative re-training is to reduce the uncertainty of the classification, which can be tracked by following the highest classification values for the given samples.
+xx present the results for this subsection.
+
+%GENERATING
+
 %Variation from first network result over the iterations
+\subsection{Variation between first iteration and the following iterations}
+The goal of the re-training process is to train the network more, faster than just using the entire dataset and a big data center worth of hardware.
+However, large variations over the course of the entire training process can indicate that the parameters do not converge into a particular cluster group.
+While the first iteration is expected to not be the perfect network immediately, it is still expected to be a general approximation of the problem, and major changes to the initial cluster group can indicate problems in the combinations.
+
+To represent the change as something more significant than a minor rounding error, only changes of 0.1 or more are tracked.
+xx present the number of samples that had a change in the highest class.
+xx present how many values changed in what magnitude in the cases where the value went up from the first prediction.
+xx present how many values changed in what magnitude in the cases where the value went down from the first prediction.
+
 %Variations between the networks, array comparison?, pick one or two of the combinations for this 0/1, 2/3, then -1 and -2
 %Array is too big/too many combinations, compare previous/next
+\subsection{Variation between neighbor iterations}
+In a similar manner to the previous section, this section aims to compare the neighboring iterations with each other.
+While large variations could remain present when comparing the first iteration with the others after new information was gained, comparing neighbors serves to localize the comparison.
+If the variation between the iterations remains large, it could indicate that the networks never converge into a particular classification, and just keep juggling certain samples between the classes.
+
+The result in this section mimic the previous section, only with a different set of results.
+To represent the change as something more significant than a minor rounding error, only changes of 0.1 or more are tracked.
+xx present the number of samples that had a change in the highest class.
+xx present how many values changed in what magnitude in the cases where the value went up from the first prediction.
+xx present how many values changed in what magnitude in the cases where the value went down from the first prediction.
+
 %Iteration spacing between training, 22, 44, 80 etc sort of deal, convert hitlist into increasing number
+\subsection{Number of sample files between training iterations}
+Finally, an important variable to analyze is the effect of the iterative re-training over time, as the dataset is processed.
+While in the beginning little is known about the dataset, as more and more information is gleaned on the dataset, it is expected that the network becomes more and more capable to handle information it has not seen yet.
+Should the number of files between iterations not change, or even go down, it could indicate that the network loses information in the training process, or that the samples have a very low amount of common features between each other.
+
 
 %Tree
+\section{Tree results}
+This section goes through the entire result dataset for experiment xx.
+The parameters used in the various examples are:
+
+\begin{itemize}
+    \item Function option, -3, -2, -1, 0, 1, 2, 3
+    \item Cache threshold: 0.5, (0.2, 0.3, and 0.4 with -3 only)
+\end{itemize}{}
+
+An explanation of these values is listed in section xx.
+As the results are far more numerous in this section, processing of these results using all of the neural networks would take an excessive amount of time.
+Therefore, a compromise was used in the form of utilizing the classification results generated for the caching process of the experiment.
+
+In addition to the standard comparison of function options, experiment xx included a control group that did not use iterative re-training.
+Results of that particular group of tests are included in the last subsection.
+
 %Size of largest cache in tree, descending, max of 20? (just measure file size of next in line)
+\subsection{Cache size of the nodes in the tree}
+Among the most important results for the tree generation are the sizes of the caches used to train the various nodes in the tree.
+Some function options could distribute their dataset more evenly, while others could could heavily lean towards putting all samples in just one class.
+Furthermore, the control groups could provide same or better results than the developed experiment, casting doubt into the need for the extra processing steps.
+
+xx show the size of the cache, descending from the largest to smallest.
+As each tree can have different trees putting samples in differently named clusters, the names of the clusters are ignored.
+
 %Number of iterations for each cluster in tree, excluding root node, descending, exists in metadata
+%Also include iteration count in some form here
+\subsection{Re-training iterations throughout the trees}
+Using the iterative re-training process in the tree generation is a very dynamic way to test the method on a vast number of sample combinations.
+However, it can also show signs of failure if it takes more and more iterations to train each next node in the tree.
+Iterative re-training adds a constant number of samples per iteration to the training process, which can in the worst case end up using the entire dataset.
+
+xx show the number of iterations used in the tree nodes, descending from largest to smallest.
+xx show each function combinations number of sample files between training iterations.
+To not pollute the figures too much, only the ten iterations with the highest number of iterations are included.
+
+%Both node failure and sample loss
+\subsection{Failed node generation per branch layer}
+Over the course of the tree generation process, various samples are removed from further use in the tree.
+First, a small number of samples are removed due to a hard requirement of one thousand samples per sample file.
+Second, every time a tree node receives less than 20 thousand samples to work with, it is considered finished and subsequently removed.
+How this process has developed over the course of each tree generation is a valuable insight into how the tree has formed, and its structure as a whole.
+Each tree node can only lose so many samples, meaning that if the tree does not distribute samples enough, it will be very narrow.
+
+xx shows how many nodes failed to be created on a per branch level.
+xx shows how many samples were lost during the tree generation process on a per branch level.
+
 %Find samples and their groups, compare deep cluster with shallow cluster, see how similar these samples are
+\subsection{Comparison between samples classified by the tree}
+
+
 %Control-specific -3 insight, 0.5-0.2 threshold comparison
+\subsection{Control insight}
+To control for potential faults in the iterative re-training process, experiment xx used a control function option called "-3" that avoided the re-training process entirely.
+This meant that while training the other options could take hours due to slowly processing the entire dataset, this control option could proceed immediately to the caching stage after the first iteration was trained.
+The faster processing time enabled the use of lower cache threshold options, which carry different values than the rest of the trees.
+Due to the nature of the softmax layer, with a cache threshold of 0.5 only one node could receive a sample to process.
+Using a lower cache threshold enabled the possibility of multiple nodes receiving the same sample, inflating the original dataset over the course of the tree generation.
+
+The results of the control group can be compared with the other trees through the combination using the 0.5 cache threshold.
+xx displays the cache size of the nodes in the control trees.
+xx shows how many nodes failed to be created, and the loss of samples on a per branch level.
+
 
 %Trees have a lot more data, processing like with iterative is unfeasible in the time limit left, not sure how good it would be anyway given different purpose
 %Cache size per node, descending (tracking the highest nodes in the trees), several graphs with different cutoffs, side by side with one cutoff shorter and one longer (left 10-15, right 35-50?)
