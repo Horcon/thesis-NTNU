@@ -546,6 +546,45 @@ After the second loss function experiment has concluded, the following results w
 \section{Iterative re-training experiment}
 \label{ex:iter-retrain}
 %Section 5: Iterative training
+
+\subsection{Parameters used}
+\label{ex:iter-retrain:params}
+
+The parameters used in the experiment are as follows:
+\begin{itemize}
+    \item Function option, -2, -1, 0, 1, 2, 3
+    \item Iteration threshold: 0.5, 0.6, 0.7, 0.8, 0.9
+\end{itemize}{}
+
+The iteration threshold defines the limit of how low certainty a sample needs to have to become a part of the dataset.
+
+The function options 0 to 3 refer to the results of the experiment in \cref{ex:loss}, and the \cref{fig:me:loss01} and \cref{fig:me:loss23} filters used in the custom loss function.
+The option -1 is created to verify that the loss function filters are of any use.
+Option -1 is defined not to have a custom loss function; instead, it uses the standard sparse categorical cross-entropy.
+As the process of the re-classification also needs to be investigated, option -2 is created.
+Option -2 uses the classifications found during the search for the bad samples as the actual classes to use in the classification.
+Should the entire loss function process be compromised, while there is still some value to the iterative re-training itself, this option is expected to have the best results.
+
+\subsection{Experiment process}
+Most of the logical process behind the experiment can be found in \cref{me:iter-retrain}.
+
+Among the practical decisions made during the experiment, was the resetting of the final classification layer and layer freezing during the model re-train, after the new classifications were acquired.
+The process is similar to the one used in the loss function processing defined in \cref{ex:loss}; however, this process has three steps.
+As the final classification layer carries the most dataset-specific conclusions about the previous iteration, this layer was removed and replaced with a fresh layer.
+The final layer was then processed for a maximum of 20 epochs, with the remainder of the model frozen.
+Following this training process, the second last layer is unfrozen, and the model is set to resume training with a reduced learning rate for another 20 epochs.
+Once the training freezes again, all but the first four of the network layers are unfrozen, and the training continues for another five epochs.
+An early stopping mechanism is used to prevent the model from needlessly churning the iterations, which stops the training process if the accuracy has not improved beyond 5\% in the last ten epochs.
+Should this happen, the remaining epochs are transferred to the next training step to utilize.
+
+
+
+\subsection{Experiment results}
+The bulk of the results for this experiment can be found in \cref{res:iter}.
+One variable parameter, however, had to be eliminated for the following tree experiment.
+Based on the initial results of this experiment, it was discovered that in almost all cases, iteration threshold 0.6 and 0.7 fail to achieve functional three clusters.
+As more and more observations were made on the results, it was determined that an iteration threshold of 0.8 would be used in the future experiment.
+
 %Main section detailing the big results from iterative training, all different ways to arrange data
 %Provide as broad of a platform for discussion in the next section
 %As results are in next chapters, discuss experiment parameters and how the experiment went?
