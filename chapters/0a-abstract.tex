@@ -1,2 +1,19 @@
 \chapter*{Abstract}
 
+This master thesis aims to investigate ways to reduce the load on the expensive hardware used in training neural networks by utilizing many smaller neural networks, rather than one big network.
+Neural networks used in this thesis are iteratively re-trained on a progressively larger dataset and then used to form a tree hierarchy.
+Various learnings from previous research done in the field are applied to accelerate the development of the neural network model to achieve satisfactory results before proceeding with the main experiments.
+
+During the training process, a modified loss function with a filter is applied to guide the neural network to achieve better classifications for the given samples.
+The filter is applied by adding an extra layer of neurons after the softmax layer, which is then discarded after the training process is finished.
+Weights of the extra layer have been manually modified to transfer the results of the softmax layer directly to the extra layer.
+As the goal of this process is to create better classifications, the resulting network is discarded at the end of the process.
+Better classifications are used as the basis for the clustering of the dataset used in the thesis.
+
+The iterative re-training takes these better classifications, and uses them in the training process as more and more of the dataset is processed.
+Finally, the networks are assembled to form a tree, chaining clusters together to distribute the dataset into smaller fragments.
+Both iterative re-training and the neural network tree are attempted in combination.
+Additionally, a control group not using iterative re-training is being attempted as well.
+The results of the two techniques are discussed separately.
+Then, they are discussed as a whole solution.
+

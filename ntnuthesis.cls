@@ -8,7 +8,7 @@
 
 %% IDENTIFICATION
 
-\xdef\ntnuthesisdate{2020/05/28}
+\xdef\ntnuthesisdate{2020/06/02}
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{ntnuthesis}
  [\ntnuthesisdate\space

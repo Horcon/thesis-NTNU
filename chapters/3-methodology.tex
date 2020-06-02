@@ -349,14 +349,49 @@ The ten classes were picked to make the division into classes more simple.
 
 
 \subsection{Extra layer} %Title wip
+\label{me:exlayer}
 %APW report territory, experiment 2 results
 %Theoretical walkthrough ONLY, experiment chapter details work done and why
+As the early model was only designed to handle 1000 samples, and it did not carry any capacity to grow to learn more, a modification was done to the final output layer of the network.
+Instead of 1000 neurons, the network was expanded to carry 1010 neurons, with the final ten being manually modified to transfer the results from the softmax layer directly to the final output layer.
+
+An illustration of this can be seen in \cref{fig:extralayerexample}.
+
+\begin{figure}[htbp]  % order of priority: h here, t top, b bottom, p page
+  \centering
+  \includegraphics[width=.5\textwidth]{figures/Drawing1.png}
+  \caption{Example of the 1010 neuron layer}
+  \label{fig:extralayerexample}
+\end{figure}
+
+%Explain theory
+By manually modifying the weights to translate the results of the network to the last layer, parts of the dataset that have been classified already can be used by assigning them to the last ten classes.
+The manual weights in the layer prevent any significant modification from being done by the training optimizer to the classifications of these last neurons while leaving the first 1000 free to be changed.
+The only values that the optimizer can use to classify the new dataset are the values provided by the softmax layer, meaning that the samples have to be assigned by the optimizer to be one of these ten classes.
+As the new dataset is trained on with the old dataset, the weights cannot be adjusted to the point of overfitting by the new dataset.
+However, some adjustment is desired, as these adjustments can be picked up on by the iterative re-training process to improve the neural network as a whole.
+
+An experiment detailed in \cref{ex:layer} was conducted to verify this layer in practice
 
 \subsection{Final model}
 %Spring model dev, explain the more thorough work on the model, setting up multiple layers, how many layers
 %Experiment 3 detailing results and how the work went, no mention of this here
 %Goal is good validation accuracy and low validation loss, should acc or loss be similar the goal is to aim for both
 %Mention that it was at this stage that agg clustering was brought in to stabilize the results
+Following the development of the extra layer, the final neural network model for this thesis was developed.
+Since the earlier model was built very quickly to make decisions about parts that were needed to develop the final model, with those parts in place, the final model could be put together.
+
+Operational variables were identified in the various components used in a convolutional neural network to develop the neural network model that would be suited for the task it would work on, 
+As running all of the possible variable combinations would take forever, determining the correct number of convolutional layers was deemed the top priority.
+The full details on the process of selecting the optimal network configuration are listed in \cref{ex:networkref}.
+
+\subsubsection{Stabilizing the result}
+
+In the beginning, it was intended that the neural network would do its classification from the very first iteration, generating the initial clusters by itself.
+While it was determined that the network is capable of doing this in \cref{ex:dataset} and \cref{ex:layer}, the results were not stable and predictable.
+Each run on the same data would return a different cluster, meaning that comparing two different configurations of neural networks would be mostly meaningless.
+The first cluster has been from this point onward generated using the Scikit-learn Agglomerative clustering function to bring stability to the network, and to make the results more predictable.
+
 
 
 %Two "main" sections, first section from autumn semester, second from spring semester
@@ -370,6 +405,76 @@ The ten classes were picked to make the division into classes more simple.
 
 %Section 3: Loss function
 \section{Loss function}
+The loss function modifications have been a central part of the development part of the thesis.
+As the custom layer has proven in \cref{ex:layer} that a custom part can significantly improve the performance of the training process, the same has been assumed for the loss function modifications.
+
+%Filter
+\subsection{Primary filter}
+The filter in the loss function targets the results of the network after a top-K function has sorted them.
+To prevent the filter from damaging the result of the current class, that class is excluded from the filter.
+As the results are sorted highest to lowest, the filter adds an extra penalty to the result by multiplying the result with itself.
+In the case of the highest values, the penalty is inverted, as the cost of errors is significantly reduced.
+The goal of the filter was to incentivize the network to cluster samples more equally by penalizing massive clusters and rewarding the smaller ones.
+
+%Pictures of the filters
+\cref{fig:me:loss01} and \cref{fig:me:loss23} show the filters used in the thesis, following the results of \cref{ex:loss}.
+Filter 0 (\cref{sfig:me:loss0}) is a simple forgiveness filter that removes the penalty of the first 200 samples.
+Filter 1 (\cref{sfig:me:loss1}) is a similar filter, except the final 200 samples are penalized doubly.
+Filter 2 (\cref{sfig:me:loss2}) is the first gradual increase filter, where the filter gradually progresses towards a defined point at a constant rate, and then changes the rate once somewhere in the middle of the filter.
+Filter 3 (\cref{sfig:me:loss3}) is based on a similar concept as filter 2; however, it also has a shelf similar to filter 1 in the middle of it.
+
+The first two filters are meant to investigate the steep increase in penalties and rewards, while the last two filters are meant to investigate the gradual increase in penalties and rewards.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/loss-0.png}
+        \caption{Loss function filter 0}
+        \label{sfig:me:loss0}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/loss-1.png}
+        \caption{Loss function filter 1}
+        \label{sfig:me:loss1}
+    \end{subfigure}
+    \caption{Loss function filters 0 and 1}
+    \label{fig:me:loss01}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/loss-2.png}
+        \caption{Loss function filter 2}
+        \label{sfig:me:loss2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/loss-3.png}
+        \caption{Loss function filter 3}
+        \label{sfig:me:loss3}
+    \end{subfigure}
+    \caption{Loss function filters 2 and 3}
+    \label{fig:me:loss23}
+\end{figure}
+
+
+%Second filter
+\subsection{Second filter}
+\label{me:secondfilter}
+In addition to the primary filter, another filter has been added to the loss function.
+As the last ten neurons are not the normal sample neurons, these need to be treated differently.
+The most substantial value among these ten neurons has its loss function cost removed, to guide the network to group samples according to these groups.
+A sub-experiment in \cref{ex:loss:secondfilter} has aimed to add an extra cost to the remaining nine neurons that would follow after the first.
+However, the experiment has yielded inconclusive towards negative results as to the usefulness of this second filter increase.
+Thus, the second filter only removes the first of the ten final neurons from the loss function cost.
+
+
 %In detail provide information on how I created my custom loss function filters, tuned the parameters
 %Here is NOT the reason I went down from 10 classes to 3
 %Explain the logic behind the filter types, show graphs that can illustrate some of this
@@ -383,15 +488,46 @@ The ten classes were picked to make the division into classes more simple.
 \section{Iterative re-training}
 %Section 4: Iterative training
 %Explain the purpose, massive dataset that can't fit in memory, would take forever to train
+Iterative re-training has been considered critical to the thesis due to the sheer size of the dataset.
+While the dataset could be reduced to fit more efficiently during the training process, it would ultimately be a tiny percentage of what was available.
+A good part of the value in the research done in this thesis is the large dataset involved, and therefore it was critical to at least attempt this.
+
 %For the purpose of grouping data, it would be mostly superfluous, after the initial batch of data most samples should have a definitive cluster
+Given the objective of the thesis, iterative re-training was considered to be the right choice regardless of the dataset size.
+While one can always achieve a better cluster distribution if one throws more data at the algorithm, odds are the cluster generated with only a couple thousand samples will be relatively close, at a fraction of the computational cost.
+Additionally, the data that does not fit well into any of the existing clusters is likely to have the most significant effect on the network, meaning that these are the samples that carry the most substantial significance.
+
+
 %The samples that don't fit the threshold are added to the small train dataset
+The goal of the iterative re-training process was to start with a minimal dataset and work through the dataset, accumulating new knowledge as more data is parsed.
+As more data is processed, more samples appear out of the norm and are absorbed into the training dataset.
+Over time, the new samples would give insight into better clustering adjustments that would prevent some of the samples that were yet to be processed, to be inserted into the dataset.
+
+
 %The hypothesis is that the change in samples that were already certain is not huge, and possibly becomes more certain with more retraining, while samples that were uncertain become more certain even further down the dataset
 %subsection for parameters used, reference results from previous experiment for loss functions, plus threshold, control versions -1 and -2
 
 %First of the two sort of relevant to the results sections
 %Specify the parameters used in determining the correct parameters in developing iterative training
+A parameter has to be picked that will determine if a sample is important enough to be considered for use in the dataset, or if it should be ignored to start the process of iterative re-training,
+In the thesis report, this parameter is referred to as the "Iteration threshold."
+If the iteration threshold is set to 0.8, for example, any sample that is classified higher than the threshold will be ignored for use in the dataset, while samples classing lower will be added to the dataset.
+
 %Specify what loss functions and parameters would used in iterative training depending on what results
 
+Following the decision on the iteration threshold parameter, the process of iterative re-training follows these steps:
+\begin{enumerate}
+    \item Train the first network using a pre-determined method
+    \item Classify samples until the minimum amount of valid samples are detected
+    \item Re-classify the samples using the selected process
+    \begin{enumerate}
+        \item Samples can also not be re-classified. Instead one can use the results of the first classification
+    \end{enumerate}
+    \item Train the network using the bigger dataset
+    \item Return to step 2 until the entire dataset is processed
+\end{enumerate}
+
+The experiment detailing the practical parts of the iterative re-training can be found in \cref{ex:iter-retrain}.
 
 \section{Tree generation}
 %Section 5: Tree generation

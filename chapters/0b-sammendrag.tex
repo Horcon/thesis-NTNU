@@ -1,2 +1,17 @@
 \chapter*{Sammendrag}
 
+Denne masteroppgaven har som mål å utforske metoder til å redusere byrden på det dyre utstyret brukt til å trene nevrale nettverk gjennom å bruke mange mindre nevrale nettverk, i stedet for et stort nettverk.
+Nevrale nettverk brukt i denne masteroppgaven er re-trent iterativt på et progressivt større sett med data, og deretter brukt i et tre-hierarki.
+Forskjellige lærdommer fra tidligere forskning ute i feltet er brukt til å akselerere utviklingen av den nevrale nettverk modellen til å oppnå gode resultater før hoved-eksperimentene begynner.
+
+Gjennom treningsprosessen, en modifisert tapsfunksjon med en filter er brukt til å rettlede det nevrale nettverket til å oppnå bedre klassifiseringer for gitte dataprøver.
+Filteret er brukt gjennom å legge til et ekstra lag med nevroner etter softmax laget, som er deretter fjernet etter treningsprosessen er ferdig.
+Vektene av dette ekstra-laget er manuelt modifisert til å overføre resultatene fra softmax-laget direkte til ekstra-laget.
+Ettersom målet med denne prosessen er å skale bedre klassifiseringer, det resulterende nettverket er fjernet på slutten av denne prosessen.
+Bedre klassifiseringer er brukt som grunnlag for grupperingen av datasettet brukt i denne masteroppgaven.
+
+Den iterative re-treningen tar disse bedre klassifiseringene, og bruker de i treningsprosessen ettersom mer og mer av datasettet er bearbeidet.
+Til slutt er nettverkene samlet i et tre, og gruppene er kjedet sammen til å distribuere datasettet til mindre fragmenter.
+Både den iterative re-treningen og det nevrale nettverk-treet er forsøkt i kombinasjon.
+I tillegg er en kontroll-gruppe som ikke bruker den iterative re-treningen brukt til å danne et tre.
+Resultatet av de to teknikkene er diskutert separat, og deretter er de diskutert som en hel løsning.

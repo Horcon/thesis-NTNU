@@ -285,7 +285,6 @@ The higher largest size of the 12 chroma test is caught up by the other two comb
 Spectral contrast has also shown some promising results. 
 However, the loss accuracy values are considered to be too perfect on the false parameter test, indicating potential pitfalls in using it as the primary dataset.
 
-
 \begin{table}[ht]
     \centering
     \begin{tabular}{|c|c|c|c|}
@@ -318,11 +317,169 @@ Of these, MFCC with DCT 3 was the only one used, as no issues with the dataset h
 %Primary dataset is based on mfcc dct 3 in this thesis, rest has not been used due to lack of time to consider their use
 
 %Section 2: 1010 neuron idea verification, model based on ex 1
+\section{Extra layer experiment}
+\label{ex:layer}
+
+As detailed in the technical walk-through of the extra layer modifications in \cref{me:exlayer}, this experiment sought to put this layer to the test.
+The experiment was done using the neural network from the previous experiment.
+Thus, the dataset was also re-used, albeit with the learnings from that experiment.
+
+\subsection{Experiment setup}
+
+First, a custom dense layer was developed using the Tensorflow class interface.
+An initial group of 1000 weights was generated using standard functions.
+Then, a one-hot matrix was applied as the source for the final ten weights.
+The modified neural network model can be seen in \cref{tab:earlymodelwithcustomlayer}.
+The first five layers have been frozen in this experiment to ensure that the model does not overfit heavily in this experiment.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Layer type & Parameters & Activation\\ \hline
+        Conv1d & 64 filters, size 3 & ReLU\\ \hline
+        Conv1d & 64 filters, size 3 & ReLU\\ \hline
+        Conv1d & 64 filters, size 3 & ReLU\\ \hline
+        Max pool & Size 2 & ReLU\\ \hline
+        Flatten & &\\ \hline
+        Dense & 250 & ReLU\\ \hline
+        Dense & 10 & Softmax \\ \hline
+        Dense (custom) & 1010 & Sigmoid \\ \hline
+    \end{tabular}
+    \caption{Modified early neural network model}
+    \label{tab:earlymodelwithcustomlayer}
+\end{table}
+
+As an additional test to look for improvements in the experiment result, two new operations have been developed for the training process in this experiment.
+
+The first operation sought to attempt to reduce the size of the largest class by running an iteration of the training process on the most abundant class.
+One thousand samples were picked at random to lose their initial classification and be reclassified.
+The "max" step has been programmed to happen every five iterations.
+
+The second operation sought to increase the performance of the lowest-performing classifications in the dataset.
+The lowest-scoring 1000 samples would be reclassified again, with the aim to improve the certainty of the network.
+The "uncertain" step has been attempted every third iteration.
+
+\subsubsection{Control group}
+
+A standard dense layer with 1010 neurons has been used as the control group in this experiment.
+Should the custom layer completely fail at its task, or be a completely meaningless endeavor, using a standard dense layer would serve as a comparison.
+
+
+\subsection{Experiment results}
+
+The experiment results have clearly shown that the custom layer is a superior option in the training of neural networks.
+\cref{fig:ex:extra:firstresult}, \cref{fig:ex:extra:custom} and \cref{fig:ex:extra:normal} show that the custom layer maintains a steady growth with the dataset, while also maintaining accuracy.
+Meanwhile, the standard layer quickly loses in the largest class metric and loses badly in the accuracy test.
+While some promise can be seen on \cref{sfig:ex:extra:normalva}, where using both additional operators has reached the same levels as the custom layer, the fact that the "max" option scored as low as it did indicates that this would likely not last for much longer.
+
+Therefore, this experiment verified that the custom layer is an excellent addition to the neural network.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/firstmax.png}
+        \caption{Highest class}
+        \label{sfig:ex:extra:firstmax}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/firstres.png}
+        \caption{Validation accuracy}
+        \label{sfig:ex:extra:firstres}
+    \end{subfigure}
+    \caption{Largest class and validation accuracy as number of samples increase}
+    \label{fig:ex:extra:firstresult}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/customhigh.png}
+        \caption{Custom layer largest class}
+        \label{sfig:ex:extra:customhigh}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/customva.png}
+        \caption{Custom layer val accuracy}
+        \label{sfig:ex:extra:customva}
+    \end{subfigure}
+    \caption{Custom layer performance with the extra operations}
+    \label{fig:ex:extra:custom}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/normalhigh.png}
+        \caption{Normal layer largest class}
+        \label{sfig:ex:extra:normalhigh}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/normalva.png}
+        \caption{Normal layer val accuracy}
+        \label{sfig:ex:extra:normalva}
+    \end{subfigure}
+    \caption{Normal layer performance with the extra operations}
+    \label{fig:ex:extra:normal}
+\end{figure}
+
+
 %Following the selection of the dataset, 1010 neuron idea was tested
 %Custom layer was developed with the weights adjusted in the last 10 layers
 %Pictures from APW report
 %Additional theories tested, mention extra options, why they were not chosen (extra workload on processing, absolutely uninteresting results compared to just using custom layer and going forward)
 %Important to mention as normal layer with both extra counter-measures appears to come close to custom layer results
+
+\section{Neural network refinement experiments}
+\label{ex:networkref}
+
+During the refinement of the neural network model, the following workflow was adopted:
+
+\begin{itemize}
+    \item Determine the correct number of convolutional layers
+    \item Test correct parameters to use in the conv layers
+    \item Test the correct number of pooling layers, and their type
+    \item Test the correct number of neurons in the first dense layer
+\end{itemize}
+
+The last three steps were repeated in combination or by themselves depending on the number of parameters tested.
+Each of the tests generated thousands of results, of which most did not fall too far away from the best performing model.
+Therefore, the feeling of urgency and strictness with the neural network model was not present during development.
+Instead, this experiment aimed at being thorough in its trials, to make sure the experiment would not need to be repeated.
+
+After many different combinations of neural network structures have been attempted, the structure of the model was finalized.
+The final network structure can be seen in \cref{tab:finalmodel}.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Layer type & Parameters & Activation\\ \hline
+        Conv1d & 128 filters, size 2 & ReLU\\ \hline
+        Max pool & Size 2 & ReLU\\ \hline
+        Conv1d & 64 filters, size 3 & ReLU\\ \hline
+        Average pool & Size 2 & ReLU\\ \hline
+        Conv1d & 64 filters, size 4 & ReLU\\ \hline
+        Max pool & Size 2 & ReLU\\ \hline
+        Conv1d & 16 filters, size 4 & ReLU\\ \hline
+        Average pool & Size 2 & ReLU\\ \hline
+        Flatten & &\\ \hline
+        Dense & 200 & ReLU\\ \hline
+        Dense & 10 & Softmax \\ \hline
+        Dense (custom) & 1010 & Sigmoid \\ \hline
+    \end{tabular}
+    \caption{Modified early neural network model}
+    \label{tab:finalmodel}
+\end{table}
 
 %Section 3: Neural network development in spring
 %Methodology writeup, tons of combinations
@@ -334,21 +491,68 @@ Of these, MFCC with DCT 3 was the only one used, as no issues with the dataset h
 %Lots of graph pages in this section
 %10-20 pages? but lots of pictures
 
+\section{Loss function experiments}
+\label{ex:loss}
+
+A similar process has been adapted to what has been used in \cref{ex:networkref} to investigate the correct parameters to use to determine the loss function filter boundaries,
+The parameters that were picked centered around the final output layer neurons divided by the number of classes that the samples could be allocated to.
+Thus, the clusters that would be below average would be rewarded, while the massive clusters would be penalized.
+
+In addition to these parameters, two other components were tested in this experiment.
+The first component was the use of differently sized initial clusters generated by Scikit, to have a more generalized cluster in the beginning.
+The second component aimed to freeze most of the layers of the network used in the loss function processing, to prevent the result from overfitting.
+In the beginning, the model would only have its fresh final layer to train for a couple of epochs, until which point the softmax layer would also be opened for training, albeit at a reduced learning rate.
+The goal of this layer freezing was to reduce the instability of the loss function processing, by making sure that the significant shifts in the clusters would need to be justified, rather than caused by a configuration error.
+
+\subsection{Secondary filter}
+\label{ex:loss:secondfilter}
+During the early experimentation, the secondary filter described in \cref{me:secondfilter} has been tested with the rest of the parameters.
+While the difference between the combinations not using the filter was negligible, it was on the negative side of the results.
+As the secondary filter never added much to the results, only the removal of the first of the last neurons was kept.
+
+\subsection{Correct cluster count reevaluation}
+Following the first proper loss function experiment, it was revealed that all combinations of parameters have descended into three clusters.
+After an investigation, it was discovered that the other clusters generated by Scikit were unlikely to ever generalize with the rest of the dataset, and thus would only pollute the results.
+The loss function experiment has been rerun with only three clusters to correct for this error,
+
+The code for the layers and the network was not adjusted to fit this discovery, as most of this code would remain dormant with no samples ever touching the extra nodes.
+As the network was optimized with ten clusters in mind, one more optimization pass was run on the network to be sure that the model would be good.
+Additionally, the parameters of the loss function experiment have been adjusted to fit the new three cluster output.
+
+\subsection{Experiment results}
+
+After the second loss function experiment has concluded, the following results were generated:
+
+\begin{itemize}
+    \item Filter 0: First parameter 200
+    \item Filter 1: First parameter 200, second parameter 800
+    \item Filter 2: First parameter 400
+    \item Filter 3: First parameter 400, second parameter 850
+    \item Best iteration cluster size: 2000 (2x1000)
+    \item First epoch limit: 5
+    \item Second epoch limit: 10 (total of 15)
+\end{itemize}
+
 %Section 4: Loss function hyperparams?
 %Results justifying why I went with the loss function parameters, the final last result
 %Q: Had a "bad" batch of results that maybe weren't as relevant, include but state it used an older version?
+
+
+
 %Section 1 on before 3clusters
 %Section 2 on before layer freeze attempt
 %Section 3 final results, which were "best in class", some had more trouble while others didn't?
 
-
+\section{Iterative re-training experiment}
+\label{ex:iter-retrain}
 %Section 5: Iterative training
 %Main section detailing the big results from iterative training, all different ways to arrange data
 %Provide as broad of a platform for discussion in the next section
 %As results are in next chapters, discuss experiment parameters and how the experiment went?
 %More technical part compared to methodology
 
-
+\section{Tree generation experiment}
+\label{ex:tree}
 %Section 6: Tree generation
 %Same but for trees
 %Uses resulting networks from iter train as root nodes, since it's same shit
