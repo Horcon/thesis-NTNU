@@ -377,14 +377,14 @@ Therefore, this experiment verified that the custom layer is an excellent additi
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{.45\textwidth}
+    \begin{subfigure}[b]{.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/firstmax.png}
         \caption{Highest class}
         \label{sfig:ex:extra:firstmax}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{.45\textwidth}
+    \begin{subfigure}[b]{.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/firstres.png}
         \caption{Validation accuracy}
@@ -396,14 +396,14 @@ Therefore, this experiment verified that the custom layer is an excellent additi
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{.45\textwidth}
+    \begin{subfigure}[b]{.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/customhigh.png}
         \caption{Custom layer largest class}
         \label{sfig:ex:extra:customhigh}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{.45\textwidth}
+    \begin{subfigure}[b]{.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/customva.png}
         \caption{Custom layer val accuracy}
@@ -415,14 +415,14 @@ Therefore, this experiment verified that the custom layer is an excellent additi
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{.45\textwidth}
+    \begin{subfigure}[b]{.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/normalhigh.png}
         \caption{Normal layer largest class}
         \label{sfig:ex:extra:normalhigh}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{.45\textwidth}
+    \begin{subfigure}[b]{.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/normalva.png}
         \caption{Normal layer val accuracy}
@@ -583,6 +583,7 @@ Should this happen, the remaining epochs are transferred to the next training st
 The bulk of the results for this experiment can be found in \cref{res:iter}.
 One variable parameter, however, had to be eliminated for the following tree experiment.
 Based on the initial results of this experiment, it was discovered that in almost all cases, iteration threshold 0.6 and 0.7 fail to achieve functional three clusters.
+Because of the detected failure in those clusters, the generation of those neural networks was frozen at iteration 25.
 As more and more observations were made on the results, it was determined that an iteration threshold of 0.8 would be used in the future experiment.
 
 %Main section detailing the big results from iterative training, all different ways to arrange data

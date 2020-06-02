@@ -1,6 +1,6 @@
 \chapter*{Sammendrag}
 
-Denne masteroppgaven har som mål å utforske metoder til å redusere byrden på det dyre utstyret brukt til å trene nevrale nettverk gjennom å bruke mange mindre nevrale nettverk, i stedet for et stort nettverk.
+Denne rapporten beskrier et forskningsprosjekt som hadde som mål å utforske metoder til å redusere byrden på det utstyret fra høyeste hylle brukt til å trene nevrale nettverk gjennom å bruke mange mindre nevrale nettverk, i stedet for et stort nettverk.
 Nevrale nettverk brukt i denne masteroppgaven er re-trent iterativt på et progressivt større sett med data, og deretter brukt i et tre-hierarki.
 Forskjellige lærdommer fra tidligere forskning ute i feltet er brukt til å akselerere utviklingen av den nevrale nettverk modellen til å oppnå gode resultater før hoved-eksperimentene begynner.
 
@@ -14,4 +14,7 @@ Den iterative re-treningen tar disse bedre klassifiseringene, og bruker de i tre
 Til slutt er nettverkene samlet i et tre, og gruppene er kjedet sammen til å distribuere datasettet til mindre fragmenter.
 Både den iterative re-treningen og det nevrale nettverk-treet er forsøkt i kombinasjon.
 I tillegg er en kontroll-gruppe som ikke bruker den iterative re-treningen brukt til å danne et tre.
-Resultatet av de to teknikkene er diskutert separat, og deretter er de diskutert som en hel løsning.
+
+Resultatet av masteroppgaven viser at iterativ re-trening har noe effekt på størrelsen og kvaliteten av de opprinnelige data gruppene, så lenge man justerer på parameterne i nettverkene korrekt.
+Gjennom trærne generert gjennom iterativ re-trening, vellykkede eksperiment er vist gjennom sammenligning av flere lyd klipp som ble gruppert i samme og forskjellige tre noder.
+Modifisering av tapsfunksjonen er vist til å ha liten effekt, men hele prosessen viser en klar hevelse av kvaliteten over alternativene.

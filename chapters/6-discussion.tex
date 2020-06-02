@@ -2,7 +2,7 @@
 
 %5-10 pages?
 
-This master thesis aims to answer these three research questions that were presented in the introduction:
+The main research goal was to investigate these three research questions that were presented in the introduction:
 
 \begin{itemize}
     \item How do neural networks that are iteratively re-trained using transfer learning on an increasing subset of the dataset, to group the entire dataset they receive into “super-classes” perform? 
@@ -82,5 +82,28 @@ While it can be argued that the two samples that were classified as similar shou
 %Section 3: Tree
 \section{Effect of parameter change}
 
+As noted in the previous sections, including the loss function process carries a clear benefit to the results, even if only the normal sparse categorical cross-entropy loss function is used.
+The samples receive more specific classification during this step, which may correctly reclassify these samples as something else.
+
+Between the iterative re-training options that did use the loss function process, a clear split emerged between the options that went with a more heavy-handed approach to the filter process, and the ones that used more gradual filters.
+The decrease in quality from the drastic filters may be a sign that the filters did not do much for the training process if only to slow it down with custom code.
+As the more drastic effects of the gradual filters would only become pronounced at the ends of the filters, their filters are likely to produce similar results to those of the standard loss function.
+
+Perhaps most interestingly, the effect of the iteration threshold parameter has had a tremendous effect on the training process.
+Threshold of 0.6 \cref{sfig:iter:largestcluster0.6} and 0.7 \cref{sfig:iter:largestcluster0.7} displayed significant reduction in quality compared to the other options.
+Meanwhile 0.5 \cref{sfig:iter:largestcluster0.5} increased its largest cluster size to encompass almost the entire dataset.
+While more research on these parameters should be done for other datasets and purposes, in this thesis, using an iteration threshold of less than 0.8 has not been productive.
+
 %Discuss the trees generated, the results and how they compare
+
+Unlike the root node generation in iterative re-training, comparing the parameter changes on the tree generation is not as easy.
+Due to the nature of the autonomous cluster generation, each tree is bound to become different from the rest very quickly.
+However, some interesting facts can be gleaned from the results.
+Even though the control option without iterative training has the least amount of knowledge about the dataset, it manages to achieve the same largest cache sizes as the other options.
+On the other hand, the option -2 that uses the previous network's results are becoming not only inferior but likely damaged by its training process.
+
+In the few parameters that were investigated for tree generation, other than the erroneous option -2, none of the results stick out from the rest.
+
+Changing the cache threshold as has been done in the control group of tree generation, however, does have a substantial effect on the time spent processing the tree.
+The effect of reducing the cache threshold does not appear to be of much significance beyond spending more time on processing, however.
 
