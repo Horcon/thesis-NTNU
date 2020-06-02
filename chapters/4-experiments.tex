@@ -593,10 +593,52 @@ As more and more observations were made on the results, it was determined that a
 \section{Tree generation experiment}
 \label{ex:tree}
 %Section 6: Tree generation
+\subsection{Parameters used}
+\label{ex:treeparam}
+
+The parameters used in this experiment are:
+
+\begin{itemize}
+    \item Function option, -3, -2, -1, 0, 1, 2, 3
+    \item Cache threshold: 0.5, (0.2, 0.3, and 0.4 with -3 only)
+\end{itemize}{}
+
+The function options are mostly the same parameters as used in \cref{ex:iter-retrain:params}.
+There is one new parameter called -3, which does not use any iterative re-training for the tree generation process.
+
+The cache threshold option mimics the iterative threshold option, in that it determines if a sample is used for a purpose or not.
+With this parameter, a classification value higher than the threshold is necessary for the sample to be inserted into the next branch layer in the tree.
+The standard cache threshold value across most of the function options is 0.5.
+As the tree generation is expected to last a while, option -3 has been used to generate other tree combinations that there was not enough time for the other function options.
+Option -3 therefore uses cache thresholds 0.2, 0.3, and 0.4 in addition to 0.5.
+
+Following the data from the previous experiment, an iteration threshold of 0.8 is used across the entire experiment.
+
+\subsection{Experiment process}
+At the start of the experiment, the networks generated in the previous experiment have been reused for this experiment.
+As the results would have been the same, it served to cut down the time to start significantly.
+A cache from the root node has been generated for each of the three clusters that would receive their own networks.
+
+The process can be summarized as follows:
+\begin{enumerate}
+    \item Check if the node has at least 20'000 samples, delete node cache if not
+    \item Create the initial cluster using Scikit - AgglomerativeClustering
+    \item Train the first network iteration
+    \item Use iterative training (except -3) to create a new neural network
+    \item Create cache for the next branch layer
+    \item Repeat until no more cache folders to process
+\end{enumerate}
+
+In addition to creating the cache for the next branch layer, should a node cluster so severely that it put all of its samples into the same cluster, that cluster is removed.
+These steps have utilized all available hard disk drives as caches for the tree generation, as each of the options had to have its copy of the dataset, in the case of the control options, even more than one copy.
+
+
+
 %Same but for trees
 %Uses resulting networks from iter train as root nodes, since it's same shit
 %Based on the cluster collapse down to 2 clusters in previous experiment, uses 0.8 as threshold for training
 %0.5 as default threshold to be used in next tree, control version -3 could afford smaller numbers
 %Time it takes to generate trees, mention how combination 3 finished on FUCKING FRIDAY before report handin?
 %As many results as possible for the discussion section
-
+\subsection{Experiment results}
+All of the results for this experiment can be found in \cref{res:tree}.

@@ -532,7 +532,20 @@ The experiment detailing the practical parts of the iterative re-training can be
 
 \section{Tree generation}
 %Section 5: Tree generation
+Similar to iterative re-training, the tree generation experiment has been central to the thesis.
+By using the iterative re-training in a tree hierarchy, the goal is to eventually track down a particular audio sample in the dataset.
+For the purposes of this thesis however, the precision of the classification is reduced somewhat.
+
 %Tree generation, same as iterative training in terms of specifying what I did, results of this goes into results/discussion
+Based on the results of \cref{ex:iter-retrain}, the iterative re-training process is intended to be used to train each node in a tree containing neural networks.
+The objective is to group samples that are similar to each other together in a computationally cheap manner.
+Once the tree would grow big enough, each node could receive a much bigger neural network to solve its part of the entire problem.
+The current alternative is to use the same bigger network to solve the entire problem, which quickly fails to achieve satisfactory results due to the problem becoming too complex.
+A small library of 2000 words is far easier to remember than a library with hundreds of thousands of words, in addition to all possible forms and permutations of each word.
+
+
+The practical aspects of creating the trees in this thesis are specified in \cref{ex:tree}.
+
 %Specify what iterative training parameters will be used depending on the criteria in the results
 %The hypothesis is that over time, samples that get grouped together will be more and more similar, either by pure values or at least with sample text ("Hello") samples get grouped together into a cluster somewhere
 %Subsection for tested parameters, mention final experiment detailing this

@@ -17,18 +17,70 @@ Each of the following sections aims to answer how the research conducted in this
 
 %Section 1: Iterative training in general
 \section{Iterative re-training performance}
+From the results of the iterative training performance, it is very apparent that the process of using the loss function training step provides better results than merely skipping that step.
+In \cref{fig:iter:largestcluster0.8}, it is clear that while all other combinations follow the slope down to lower the size of the largest cluster, option -2 that does not use this process fails and even proceeds to create an even bigger cluster.
+Looking more directly on the rest of the options, the control option -1 is showing similar levels of cluster distribution as the gradual loss filters 2 and 3.
+Meanwhile, the drastic filter options 0 and 1 are above in the largest cluster size, both in the 0.8 iteration threshold, and others like \cref{fig:iter:largestcluster0.70.9}.
+From these graphs alone, it is easy to conclude that while the loss function filters provide little benefit, the process itself is superior to just going with the most significant classification from the previous model.
+
+However, a somewhat different picture can be seen on \cref{fig:iter:varfirst0.8}. 
+At first glance, the -2 option turns out to be the one that varies from the first iteration the least, while the rest vary more and more.
+The variation, however, is a desired trait of the loss function process, and the gradual stabilization of the superior three (-1, 2, 3) options indicates a steady stabilization of the process.
+
+The stabilization becomes the most apparent on \cref{fig:iter:varneigh0.8}. 
+In all options, the variation between the neighboring iterations rapidly descends to a minimum that can be attributed to training process artifacts.
+By the time the 10th iteration is reached, little more can be learned by the network.
+With each iteration adding another 2000 samples to the dataset, a significant portion of the variation can be caused by new samples being used in the training process.
+
+To ultimately conclude that going too far beyond the 10th iteration is bound to bring diminishing returns, \cref{fig:iter:iterbelow0.8} can be referenced.
+At around 10th iteration, over 80\% of samples that were initially below the threshold have been put above it.
+At that point, only 20'000 samples have entered the dataset.
+Since all samples appear to be descending at the same speed, there is no difference between them in this comparison.
+However, it is interesting to note that the -2 option that has been relatively bad in the primary 0.8 results, appears to be maintaining its results stably across all cluster size figures. 
+In contrast, other options struggled at 0.6 and 0.7.
+
+Lastly, in terms of the rate of sample files between iterations, the results are relatively similar in all cases. 
+As previously, option -2 sticks out and does its own thing, but in general, the number of sample files between iterations goes up on a somewhat linear basis across the dataset.
 
 %In detail discuss how iterative training went, focusing on the aspect of iterative training
 
 %Section 2: Parameter tuning of iterative training
 \section{Tree generation process}
+During the tree generation process, the distinctness of the -2 option has stayed from the iterative re-training experiment.
+In \cref{fig:tree:treecache}, it is the most distinct of the options by having excessively large first six or so rows.
+On the flip side, on \cref{fig:tree:treeiter} it has the least amount of iterations in the first two nodes.
+
+The other options, however, very quickly descend to two and then one million samples per node.
+However, the first node in all remaining options has managed to pass its root node in iterations to finish.
+The tree generation had to be conducted strictly on a single thread basis for a while, as even one thread had consumed all available RAM storage for its dataset.
+
+Over time, the number of iterations drops down as there are fewer samples to go around in the nodes.
+By the time \cref{sfig:tree:treeiter25} finishes at 25 nodes, the iterations drop down to below 20, which is close to where the sweet spot for iterative re-training appears to be from the previous section's findings.
+
+Continuing in investigating the performance of the trees, we can see from \cref{fig:tree:nodefail} that most of the nodes are removed at around level 8, with some stragglers remaining until the end of the graph.
+As the first cluster generation is tied strictly to how good the first 2000 samples are in clustering, this result may not represent each of the function options accurately.
+However, given that this trend repeats itself for all options, it is relatively safe to say that for a dataset of 12.6 million samples, most of the branching will be finished by branch level 10, assuming a minimum branch size of 20'000 samples.
+
+Lastly, for the comparison of the main options, all options had lost roughly the same amount of samples on each branch level, descending rapidly around level 8, where most nodes were removed.
+Option -2 is again losing the least amount of samples per level, followed shortly by the control option -3.
+
+Moving on to the control options, the size of the most massive clusters in \cref{fig:tree:treecontrolcluster} is not indicative of much.
+The lower cache threshold options are slightly larger than the option using the shared variable, but in general, the largest cluster size maintains itself steadily.
+
+The difference becomes apparent on \cref{fig:tree:treecontrolnodesample}.
+In the case of the control option using the cache threshold of 0.2, the cache size almost doubled before going down eventually.
+As the size of the dataset increases, so did the number of node failures per branch level, with the 0.2 control option losing almost more branches in one level than some of the trees had in total.
+
+Lastly, the tree is proven to achieve some degree of similarity detection in \cref{res:similar}.
+While it can be argued that the two samples that were classified as similar should have been separated at some point earlier, it is clear that both are distinctly different from the first example.
+
 %Go into the information found in the parameter search
 %Already interesting known result, threshold had significant effect
 %0.5 was "good" but few iterations on initial model, 0.6 and 0.7 collapsed into 2 classes, 0.8 and 0.9 kept 3 classes
 %Because of time constraints, decision to go with 0.8 was made based on it being a more "balanced" number, faster tree generation, earlier use in development as "assumed good value"
 
 %Section 3: Tree
-\section{Combining both items together}
+\section{Effect of parameter change}
 
 %Discuss the trees generated, the results and how they compare
 

@@ -297,6 +297,7 @@ Should the number of files between iterations not change, or even go down, it co
 
 %Tree
 \section{Tree results}
+\label{res:tree}
 This section goes through the entire result dataset for \cref{ex:tree}.
 The parameters used in the various examples are:
 
@@ -305,7 +306,7 @@ The parameters used in the various examples are:
     \item Cache threshold: 0.5, (0.2, 0.3, and 0.4 with -3 only)
 \end{itemize}{}
 
-An explanation of these values is listed in \cref{ex:tree}.
+An explanation of these values is listed in \cref{ex:treeparam}.
 As the results are far more numerous in this section, processing of these results using all of the neural networks would take an excessive amount of time.
 Therefore, a compromise was used in the form of utilizing the classification results generated for the caching process.
 
@@ -397,6 +398,7 @@ Each tree node can only lose so many samples, meaning that if the tree does not 
 
 %Find samples and their groups, compare deep cluster with shallow cluster, see how similar these samples are
 \subsection{Comparison between samples classified by the tree}
+\label{res:similar}
 
 To compare the performance of the tree generation on the real data, three samples are presented in figures \cref{fig:tree:sample1}, \cref{fig:tree:sample2}, and \cref{fig:tree:sample3}.
 
