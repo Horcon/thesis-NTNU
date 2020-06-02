@@ -2,9 +2,11 @@
 
 %Conclusion based on results and discussion
 In conclusion, the thesis has investigated a way to use currently existing hardware more optimally by clustering data through the use of smaller neural networks in tree hierarchies.
-The tree clustering has been facilitated by a vast home-made dataset containing Japanese audio and English text, that make the thesis relevant for future students and researchers that wish to start developing neural networks but lack the dataset to start.
+The tree clustering has been facilitated by a vast home-made dataset containing over 32 TB of raw video containing Japanese audio and English text.
+This could make the thesis relevant for future students and researchers that wish to start developing neural networks but lack the dataset to start.
+Even after preprocessing all of the data, more than 370 GB and over 12 million samples were ready to be used without any large-scale labeling actions taken by commercial or private actors.
 
-Iterative re-training has proven to provide some meaningful results, while the loss function filters have not been all that effective.
+Iterative re-training has proven to provide meaningful results, while the loss function filters have not been all that effective.
 Their development has still led to the introduction of the loss function process in the thesis, which turned out to be the key to make the iterative re-training work for the thesis dataset.
 Usage of less computationally expensive alternatives has simultaneously been proven to be not very productive.
 
@@ -13,23 +15,28 @@ Nonetheless, the metadata provided during their creation has shown that the meth
 Comparing the samples classified by a tree, it has been shown that more similar samples are clustered together, while more distinct samples are kept separate.
 
 The effects of changing the various parameters during the experiments have also been investigated.
-Some parameters, like the iteration threshold, have been proven to be very sensitive to change, with lower values producing vastly inferior results.
-Other parameters like the cache threshold have been shown to produce very similar results across the different tested values while wasting more time for the developer.
+Specific parameters like the iteration threshold have been proven to be very sensitive to change, with lower values producing vastly inferior results.
+Other parameters, like the cache threshold, have been shown to produce very similar results across the different tested values while wasting more time for the developer.
 
 \section{Future work}
 %1-2 pages detailing what I wish I did have time for, what could be useful to look into etc
 %Use different activation for custom layer
 %Compare more 
 While this thesis aimed to succeed in accomplishing many goals set up at the beginning of the thesis, plenty of work remain.
-The development of several parts of the thesis has been frozen and left as-is at various points during the thesis.
-Lack of reflection caused some problems during the thesis that were recoverable earlier than when they were finally noticed.
+Initially, the thesis aimed to produce a full-fledged Japanese speech to English text translator.
+Eventually, only the core hypothesis of iterative re-training and tree generation has been accomplished in time.
+It is likely to be possible to accomplish on the hardware available to consumers using the work done in this thesis as a basis.
 
-Of the future work that could be done in the immediate future, is the replacement of the activation function in the custom dense layer used at the end of the neural network models in the loss function processing step.
-Currently, only Sigmoid has been used as the last activation function, and other functions could perform better.
+Of the future work that could be done in the immediate future, the replacement of the activation function in the custom dense layer is an interesting aspect to research.
+Currently, only Sigmoid has been used as the last activation function.
+As Sigmoid due to its nature, compresses the input it receives from a Softmax activation function, and other functions could perform better.
+A potential candidate for improvement is the ReLU activation function.
 
 Another area that could be tested more is more variants of the loss function filters.
 The filters used in the thesis are simple filters that are easy to program, but may not be the most optimal mathematical functions that could distribute the loss values better.
+It may be possible that in combination with a different activation function, loss function filters could prove to be slightly superior to the standard sparse categorical cross-entropy loss function.
 
 Lastly, more architecture and analysis of the trees themselves is necessary to reach any decisive conclusion about them.
 Due to time limitations caused in part from the trees taking an excessive amount of time to generate, only the cache used in the creation of the trees could be used for analysis.
-Other, more good or bad information could come forward if more analysis is conducted.
+Other useful information could come forward if more analysis is conducted.
+
